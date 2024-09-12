@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="isometric" width="13" height="13" tilewidth="64" tileheight="32">
+ <properties>
+  <property name="AutomappingRadius" value="2"/>
+ </properties>
+ <tileset firstgid="1" name="collision" tilewidth="64" tileheight="32">
+  <image source="../tiled_collision.png" width="960" height="32"/>
+ </tileset>
+ <tileset firstgid="16" name="dungeon" tilewidth="64" tileheight="128">
+  <image source="../tiled_dungeon.png" width="1024" height="1920"/>
+ </tileset>
+ <tileset firstgid="256" name="set_rules" tilewidth="64" tileheight="32">
+  <image source="../set_rules.png" width="128" height="128"/>
+ </tileset>
+ <layer name="Regions" width="13" height="13">
+  <data encoding="base64" compression="zlib">
+   eJxjYCATMEIxMhtZjBZ6yHHbKBjyAAAldAAR
+  </data>
+ </layer>
+ <layer name="Input_set" width="13" height="13">
+  <data encoding="base64" compression="zlib">
+   eJxjYCAPMDFCMIzNgoRxARY0PciYGD3EAnL0jILBCwCFXAA9
+  </data>
+ </layer>
+ <layer name="Output_background" width="13" height="13">
+  <data encoding="base64" compression="zlib">
+   eJxjYCAPKAKxEpStDMRCQCxMQI8QVC0IKKCZgQsIQ9WOgpELAP9mAVc=
+  </data>
+ </layer>
+ <layer name="Output_object" width="13" height="13">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAOiALiQAJqIsgwN4AMPaNgeAEA+XIBVA==
+  </data>
+ </layer>
+ <layer name="Output_collision" width="13" height="13">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2BwAwACpAAB
+  </data>
+ </layer>
+</map>

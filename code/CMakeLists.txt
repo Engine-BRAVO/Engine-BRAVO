@@ -21,6 +21,11 @@ endif()
 
 # Include the header files
 include_directories(${PROJECT_SOURCE_DIR}/inc)
+include_directories(${PROJECT_SOURCE_DIR}/lib/tinyxml2/include)  # TinyXML2 headers
+include_directories(${PROJECT_SOURCE_DIR}/lib/zstd/include)      # Zstd headers
+include_directories(${PROJECT_SOURCE_DIR}/lib/GTest/include)     # GTest headers
+include_directories(${PROJECT_SOURCE_DIR}/lib/tinytmx/include)   
+include_directories(${PROJECT_SOURCE_DIR}/lib/tinytmx/include/tinytmx) 
 
 # Specify the source files
 set(SOURCES
@@ -47,6 +52,7 @@ FetchContent_Declare(
 # Download GTest during configuration step
 FetchContent_MakeAvailable(googletest)
 
+
 # Enable testing in the project
 enable_testing()
 
@@ -62,6 +68,18 @@ add_executable(tests ${TEST_SOURCES})
 # Link GTest and GTest Main to the test executable
 target_link_libraries(tests gtest gtest_main)
 
+# Add library directories (where the .a files are located)
+link_directories(${PROJECT_SOURCE_DIR}/lib/tinytmx/lib)
+link_directories(${PROJECT_SOURCE_DIR}/lib/tinyxml2/lib)
+link_directories(${PROJECT_SOURCE_DIR}/lib/zstd/lib)
+
+# Link libraries
+target_link_libraries(engine_BRAVO 
+    tinytmx    # Link TinyTMX
+    tinyxml2   # Link TinyXML2
+    zstd       # Link Zstd
+    z  # Link zlib
+)
 # Add test execution
 add_test(NAME engine_BRAVO_tests COMMAND tests)
 
