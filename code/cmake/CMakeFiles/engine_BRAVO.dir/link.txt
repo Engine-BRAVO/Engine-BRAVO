@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/engine_BRAVO.dir/src/ParticleSystem.cpp.o CMakeFiles/engine_BRAVO.dir/src/main.cpp.o -o engine_BRAVO  -lSDL2 -lSDL2_image -lSDL2 -lSDL2_image 

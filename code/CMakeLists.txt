@@ -18,7 +18,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message("Debug mode enabled")
     add_compile_options(-g -O0)
 endif()
-
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Include the header files
 include_directories(${PROJECT_SOURCE_DIR}/inc)
 
