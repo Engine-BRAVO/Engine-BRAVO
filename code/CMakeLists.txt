@@ -21,11 +21,6 @@ endif()
 
 # Include the header files
 include_directories(${PROJECT_SOURCE_DIR}/inc)
-include_directories(${PROJECT_SOURCE_DIR}/lib/tinyxml2/include)  # TinyXML2 headers
-include_directories(${PROJECT_SOURCE_DIR}/lib/zstd/include)      # Zstd headers
-include_directories(${PROJECT_SOURCE_DIR}/lib/GTest/include)     # GTest headers
-include_directories(${PROJECT_SOURCE_DIR}/lib/tinytmx/include)   
-include_directories(${PROJECT_SOURCE_DIR}/lib/tinytmx/include/tinytmx) 
 
 # Specify the source files
 set(SOURCES
@@ -68,10 +63,33 @@ add_executable(tests ${TEST_SOURCES})
 # Link GTest and GTest Main to the test executable
 target_link_libraries(tests gtest gtest_main)
 
-# Add library directories (where the .a files are located)
-link_directories(${PROJECT_SOURCE_DIR}/lib/tinytmx/lib)
-link_directories(${PROJECT_SOURCE_DIR}/lib/tinyxml2/lib)
-link_directories(${PROJECT_SOURCE_DIR}/lib/zstd/lib)
+# Fetch TinyXML2
+FetchContent_Declare(
+  tinyxml2
+  URL https://github.com/leethomason/tinyxml2/archive/refs/tags/9.0.0.zip
+)
+FetchContent_MakeAvailable(tinyxml2)
+
+# Fetch Zstd
+FetchContent_Declare(
+  zstd
+  URL https://github.com/facebook/zstd/archive/refs/tags/v1.5.2.zip
+)
+FetchContent_MakeAvailable(zstd)
+
+# Fetch TinyTMX
+FetchContent_Declare(
+  tinytmx
+  URL https://github.com/KaseyJenkins/tinytmx/archive/refs/heads/master.zip
+)
+FetchContent_MakeAvailable(tinytmx)
+
+# Fetch TinyTMX
+FetchContent_Declare(
+  zlib
+  URL https://github.com/madler/zlib/archive/refs/heads/develop.zip
+)
+FetchContent_MakeAvailable(zlib)
 
 # Link libraries
 target_link_libraries(engine_BRAVO 
