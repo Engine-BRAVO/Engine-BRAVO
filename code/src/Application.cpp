@@ -11,10 +11,12 @@ Application::Application()
 
 	//m_window = SDL_CreateWindow("sdl2 window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 680, 480, 0);
 	SDL_Init(SDL_INIT_VIDEO);
-	SDL_CreateWindowAndRenderer(640*4, 480*4, 0, &m_window, &renderer);
+	SDL_CreateWindowAndRenderer(640, 480, 0, &m_window, &renderer);
 	//	m_window_surface = SDL_GetWindowSurface(m_window);	
-	SDL_RenderSetScale(renderer, 4, 4);
-	
+	SDL_RenderSetScale(renderer, 2, 2);
+
+	ParticleSystem *part = new ParticleSystem(10, 1);
+	particlesystem = part;
 }
 
 Application::~Application()
@@ -47,18 +49,25 @@ void Application::update()
 
 void Application::draw()
 {
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
-	for(int i = 0; i < 500; i++) 
+		particlesystem->updateParticles();
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		SDL_RenderClear(renderer);
+		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 0);
+
+	std::vector<Particle> particleList = particlesystem->getParticles();
+	for (std::vector<Particle>::iterator it = particleList.begin(); it != particleList.end(); ++it) 
 	{
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-		SDL_RenderDrawPoint(renderer,500, i);
+	
 
-
+		SDL_RenderDrawPoint(renderer,it->_pos.y, it->_pos.x);
 		SDL_RenderPresent(renderer);
 		SDL_UpdateWindowSurface(m_window);
 
-	}
+	}	
+		SDL_Delay(16);
+
+
+
 
 }
 

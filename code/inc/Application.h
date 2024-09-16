@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ParticleSystem.h"
 #include "SDL_render.h"
 #include <SDL2/SDL.h>
 
@@ -15,6 +16,7 @@ public:
 	SDL_Surface *load_surface(char const *path);
 
 private:
+	ParticleSystem *particlesystem;
 
 	SDL_Surface *m_image;
 	SDL_Rect m_image_position;

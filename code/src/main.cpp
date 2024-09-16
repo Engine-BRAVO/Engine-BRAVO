@@ -9,6 +9,8 @@
 int main(int argc, char* args[]) 
 {
 	Application app;
-	app.update();
-	app.draw();
+
+		app.update();
+		app.draw();
+
 }
