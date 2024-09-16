@@ -1,9 +1,10 @@
+#!/bin/bash
 # Install Zlib
-sudo apt-get install zlib1g-dev
+sudo apt-get install zlib1g-dev -y
 
 # Install TinyXML2
-sudo apt-get install libtinyxml2-dev
+sudo apt-get install libtinyxml2-dev -y
 
 # Install Zstd
-sudo apt-get install libzstd-dev
+sudo apt-get install libzstd-dev -y
 
