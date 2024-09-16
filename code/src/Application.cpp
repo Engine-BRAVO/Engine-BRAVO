@@ -49,17 +49,16 @@ void Application::draw()
 {
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderClear(renderer);
-	//for(int i = 0; i < 1000; i++) 
-	//{
+	for(int i = 0; i < 500; i++) 
+	{
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-		SDL_RenderDrawPoint(renderer,500, 300);
-		SDL_RenderDrawPoint(renderer,300, 300);
+		SDL_RenderDrawPoint(renderer,500, i);
 
 
 		SDL_RenderPresent(renderer);
 		SDL_UpdateWindowSurface(m_window);
 
-	//}
+	}
 
 }
 

@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-struct pos 
+union pos 
 {
 	int x;
 	int y;
@@ -8,6 +8,7 @@ struct pos
 
 struct Particle 
 {
+	int color;
 	pos position;
 	int life;
 };
@@ -18,7 +19,12 @@ class ParticleSystem
 public:
 	ParticleSystem(int amount);
 	~ParticleSystem();
+
+	void UpdateSystem();
+
+
 private:
-	int amount;
+	int _amount;
+	int velocity;
 	std::vector<Particle> particleList;	
 };
