@@ -26,6 +26,7 @@ endif()
 #find_package(tinyxml2 REQUIRED)
 #find_package(zstd REQUIRED)
 
+#set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 # Include the header files
 include_directories(${PROJECT_SOURCE_DIR}/inc)
 
@@ -39,7 +40,7 @@ set(SOURCES
 # Add the executable target
 add_executable(engine_BRAVO ${SOURCES})
 #target_link_libraries(engine_BRAVO $(PROJECT_SOURCE_DIR)/zlib/zstd-1.5.2/lib/libzstd.so $(PROJECT_SOURCE_DIR)/tinyxml2/tinyxml2-9.0.0/build/libtinyxml2.a)
-target_link_libraries(engine_BRAVO $(PROJECT_SOURCE_DIR)/zstd/zstd-1.5.2/lib/libzstd.so $(PROJECT_SOURCE_DIR)/tinyxml2/tinyxml2-9.0.0/build/libtinyxml2.a $(PROJECT_SOURCE_DIR)zlib/zlib-1.2.13/libz.so)
+target_link_libraries(engine_BRAVO $(PROJECT_SOURCE_DIR)/zstd/zstd-1.5.2/lib/libzstd.so $(PROJECT_SOURCE_DIR)/tinyxml2/tinyxml2-9.0.0/build/libtinyxml2.a $(PROJECT_SOURCE_DIR)/zlib/zlib-1.2.13/libz.so)
 
 
 # =====================
