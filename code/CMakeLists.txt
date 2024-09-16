@@ -19,7 +19,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_options(-g -O0)
 endif()
 
-set(CMAKE_PREFIX_PATH "/usr/local/lib/cmake/tinyxml2;/usr/local/lib/cmake/zstd")
+set(CMAKE_PREFIX_PATH "/usr/local/lib/cmake/zstd")
 
 # Find the required packages
 find_package(ZLIB REQUIRED)
