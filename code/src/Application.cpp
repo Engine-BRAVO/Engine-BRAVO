@@ -13,9 +13,8 @@ Application::Application()
 	SDL_Init(SDL_INIT_VIDEO);
 	SDL_CreateWindowAndRenderer(640, 480, 0, &m_window, &renderer);
 	//	m_window_surface = SDL_GetWindowSurface(m_window);	
-	SDL_RenderSetScale(renderer, 2, 2);
-
-	ParticleSystem *part = new ParticleSystem(10, 1);
+	SDL_RenderSetScale(renderer, 4, 4);
+	ParticleSystem *part = new ParticleSystem(1000, 1);
 	particlesystem = part;
 }
 
