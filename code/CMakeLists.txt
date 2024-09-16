@@ -39,7 +39,7 @@ set(SOURCES
 # Add the executable target
 add_executable(engine_BRAVO ${SOURCES})
 #target_link_libraries(engine_BRAVO $(PROJECT_SOURCE_DIR)/zlib/zstd-1.5.2/lib/libzstd.so $(PROJECT_SOURCE_DIR)/tinyxml2/tinyxml2-9.0.0/build/libtinyxml2.a)
-target_link_libraries(engine_BRAVO $(PROJECT_SOURCE_DIR)/zlib/zstd-1.5.2/lib/libzstd.so $(PROJECT_SOURCE_DIR)/tinyxml2/tinyxml2-9.0.0/build/libtinyxml2.a)
+target_link_libraries(engine_BRAVO $(PROJECT_SOURCE_DIR)/zstd/zstd-1.5.2/lib/libzstd.so $(PROJECT_SOURCE_DIR)/tinyxml2/tinyxml2-9.0.0/build/libtinyxml2.a $(PROJECT_SOURCE_DIR)zlib/zlib-1.2.13/libz.so)
 
 
 # =====================
@@ -84,7 +84,7 @@ FetchContent_MakeAvailable(tinytmx)
 
 # Link libraries
 target_link_libraries(engine_BRAVO 
-    z
+#    z
     tinytmx    # Link TinyTMX
 )
 # Add test execution

@@ -1,14 +1,23 @@
 #!/bin/bash
 
 # Install Zlib
-sudo apt-get install zlib1g-dev -y
+cd ..
+mkdir zlib
+cd zlib
+# Download and install specific version of Zlib (1.2.13)
+wget https://github.com/madler/zlib/archive/refs/tags/v1.2.13.zip
+unzip v1.2.13.zip
+cd zlib-1.2.13
+./configure
+make -j16
+sudo make install
 
 # Install TinyXML2
 #sudo apt-get install libtinyxml2-dev -y
 # Remove any existing TinyXML2 version
 #sudo apt-get remove libtinyxml2-dev -y
 
-cd ..
+cd ../../
 mkdir tinyxml2
 cd tinyxml2
 # Download and install specific version of TinyXML2 (9.0.0)
@@ -24,10 +33,9 @@ sudo make install
 # Install Zstd
 # Remove any existing Zstd version
 #sudo apt-get remove libzstd-dev -y
-
 cd ../../..
-mkdir zlib
-cd zlib
+mkdir zstd
+cd zstd
 # Download and install specific version of Zstd (1.5.2)
 wget https://github.com/facebook/zstd/archive/refs/tags/v1.5.2.tar.gz 
 tar -xzvf v1.5.2.tar.gz
