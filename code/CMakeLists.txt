@@ -19,7 +19,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_options(-g -O0)
 endif()
 
-set(CMAKE_PREFIX_PATH "/usr/local/lib/cmake/zstd")
+set(CMAKE_PREFIX_PATH "../../../zstd-1.5.2/build/cmake/build")
 
 # Find the required packages
 find_package(ZLIB REQUIRED)
