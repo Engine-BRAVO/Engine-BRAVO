@@ -63,6 +63,7 @@ add_executable(tests ${TEST_SOURCES})
 # Link GTest and GTest Main to the test executable
 target_link_libraries(tests gtest gtest_main)
 
+
 # Fetch TinyXML2
 FetchContent_Declare(
   tinyxml2
@@ -77,6 +78,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(zstd)
 
+
 # Fetch TinyTMX
 FetchContent_Declare(
   tinytmx
@@ -84,19 +86,36 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(tinytmx)
 
-# Fetch TinyTMX
+
+# Fetch Zlib with Z_PREFIX option to avoid macro conflicts
 FetchContent_Declare(
   zlib
-  URL https://github.com/madler/zlib/archive/refs/heads/develop.zip
+  URL https://github.com/madler/zlib/archive/refs/tags/v1.2.13.zip
+  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 FetchContent_MakeAvailable(zlib)
 
+# Pass Zlib information to TinyTMX before FetchContent_MakeAvailable(tinytmx)
+
+set(ZLIB_INCLUDE_DIR ${zlib_SOURCE_DIR})
+set(ZLIB_LIBRARY ${zlib_BINARY_DIR}/libz.a)
+set(ZLIB_LIBRARIES ${zlib_BINARY_DIR}/libz.a)
+set(ZLIB_INCLUDE_DIRS ${zlib_SOURCE_DIR})
+
+# Add the Z_PREFIX option when building Zlib to prevent macro conflicts
+add_compile_definitions(Z_PREFIX)
+target_include_directories(engine_BRAVO PRIVATE ${zlib_INCLUDE_DIR})
+target_include_directories(engine_BRAVO PRIVATE ${zlib_SOURCE_DIR})
+# Include the Zlib and TinyXML2 headers and link the libraries
+
+
+
 # Link libraries
 target_link_libraries(engine_BRAVO 
-    tinytmx    # Link TinyTMX
+    ${zlib_LIBRARY} 
     tinyxml2   # Link TinyXML2
     zstd       # Link Zstd
-    z  # Link zlib
+    tinytmx    # Link TinyTMX
 )
 # Add test execution
 add_test(NAME engine_BRAVO_tests COMMAND tests)
