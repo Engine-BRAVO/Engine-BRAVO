@@ -44,3 +44,6 @@
 build/
 
 .vscode/
+
+code/tinyxml2/**
+code/zlib/**

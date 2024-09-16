@@ -19,15 +19,16 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_options(-g -O0)
 endif()
 
-set(CMAKE_PREFIX_PATH "../../../zstd-1.5.2/build/cmake/build")
+#set(CMAKE_PREFIX_PATH "../../zstd-1.5.2/build/cmake/build")
 
 # Find the required packages
-find_package(ZLIB REQUIRED)
-find_package(tinyxml2 REQUIRED)
-find_package(zstd REQUIRED)
+#find_package(ZLIB REQUIRED)
+#find_package(tinyxml2 REQUIRED)
+#find_package(zstd REQUIRED)
 
 # Include the header files
 include_directories(${PROJECT_SOURCE_DIR}/inc)
+
 
 # Specify the source files
 set(SOURCES
@@ -37,6 +38,9 @@ set(SOURCES
 
 # Add the executable target
 add_executable(engine_BRAVO ${SOURCES})
+#target_link_libraries(engine_BRAVO $(PROJECT_SOURCE_DIR)/zlib/zstd-1.5.2/lib/libzstd.so $(PROJECT_SOURCE_DIR)/tinyxml2/tinyxml2-9.0.0/build/libtinyxml2.a)
+target_link_libraries(engine_BRAVO $(PROJECT_SOURCE_DIR)/zlib/zstd-1.5.2/lib/libzstd.so $(PROJECT_SOURCE_DIR)/tinyxml2/tinyxml2-9.0.0/build/libtinyxml2.a)
+
 
 # =====================
 # Google Test Integration
@@ -80,8 +84,6 @@ FetchContent_MakeAvailable(tinytmx)
 
 # Link libraries
 target_link_libraries(engine_BRAVO 
-    ZLIB::ZLIB 
-    tinyxml2::tinyxml2
     z
     tinytmx    # Link TinyTMX
 )
