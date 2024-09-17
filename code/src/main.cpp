@@ -3,12 +3,14 @@
 #include <vector>
 #include "tinytmx.hpp"
 #include <string>
+#include <filesystem>
 
 // Path to the .tmx map file
-std::string mapFile = "../example_maps/sample/sample.tmx";
+std::string mapFile = "code/example_maps/sample/sample.tmx";
 
 // Function to read finite map tile data into a 2D array
 std::vector<std::vector<int>> ReadLayerInto2DArray(const tinytmx::TileLayer* tileLayer, int width, int height) {
+    
     std::vector<std::vector<int>> tileArray(height, std::vector<int>(width));
 
     // Retrieve the finite map data
