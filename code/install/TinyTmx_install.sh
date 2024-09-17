@@ -43,8 +43,9 @@ cd zstd-1.5.2
 make -j 16
 sudo make install
 cd build/cmake
-mkdir build
-cd build
-cmake ..
+cmake .
+make  -j 16
+sudo make install
+
 
 

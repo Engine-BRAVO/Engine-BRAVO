@@ -5,7 +5,7 @@
 #include <string>
 
 // Path to the .tmx map file
-std::string mapFile = "/home/ronan/Documents/GitHub/Engine-BRAVO/code/example_maps/sample/sample.tmx";
+std::string mapFile = "../example_maps/sample/sample.tmx";
 
 // Function to read finite map tile data into a 2D array
 std::vector<std::vector<int>> ReadLayerInto2DArray(const tinytmx::TileLayer* tileLayer, int width, int height) {

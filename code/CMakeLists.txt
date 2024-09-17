@@ -19,7 +19,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_options(-g -O0)
 endif()
 
-#set(CMAKE_PREFIX_PATH "../../zstd-1.5.2/build/cmake/build")
+set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}zstd/zstd-1.5.2/build/cmake" ${CMAKE_PREFIX_PATH})
+set(zstd_DIR "${PROJECT_SOURCE_DIR}/zstd/zstd-1.5.2/build/cmake")
 
 # Find the required packages
 #find_package(ZLIB REQUIRED)
@@ -37,10 +38,15 @@ set(SOURCES
     # Add more source files here
 )
 
+link_directories(${PROJECT_SOURCE_DIR}/zstd/zstd-1.5.2/lib)
 # Add the executable target
 add_executable(engine_BRAVO ${SOURCES})
 #target_link_libraries(engine_BRAVO $(PROJECT_SOURCE_DIR)/zlib/zstd-1.5.2/lib/libzstd.so $(PROJECT_SOURCE_DIR)/tinyxml2/tinyxml2-9.0.0/build/libtinyxml2.a)
-target_link_libraries(engine_BRAVO $(PROJECT_SOURCE_DIR)/zstd/zstd-1.5.2/lib/libzstd.so $(PROJECT_SOURCE_DIR)/tinyxml2/tinyxml2-9.0.0/build/libtinyxml2.a $(PROJECT_SOURCE_DIR)/zlib/zlib-1.2.13/libz.so)
+target_link_libraries(engine_BRAVO 
+    ${PROJECT_SOURCE_DIR}/zstd/zstd-1.5.2/lib/libzstd.a 
+    ${PROJECT_SOURCE_DIR}/tinyxml2/tinyxml2-9.0.0/build/libtinyxml2.a 
+    ${PROJECT_SOURCE_DIR}/zlib/zlib-1.2.13/libz.so
+)
 
 
 # =====================
@@ -55,9 +61,16 @@ FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/refs/tags/release-1.12.1.zip  # You can use the latest release
 )
-
-# Download GTest during configuration step
+# Make the content available
 FetchContent_MakeAvailable(googletest)
+
+# Set CMake flags for GTest
+set(GTEST_INCLUDE_DIR "${googletest_SOURCE_DIR}/googletest/include")
+set(GTEST_LIBRARY "${googletest_BINARY_DIR}/lib/libgtest.a")
+set(GTEST_MAIN_LIBRARY "${googletest_BINARY_DIR}/lib/libgtest_main.a")
+
+# Include the GTest directories
+include_directories(${GTEST_INCLUDE_DIR})
 
 
 # Enable testing in the project
@@ -82,10 +95,11 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(tinytmx)
 
+# Add extra compiler options for tinytmx to ensure <cstdint> is included
+target_compile_options(tinytmx PRIVATE -include cstdint)
 
 # Link libraries
 target_link_libraries(engine_BRAVO 
-#    z
     tinytmx    # Link TinyTMX
 )
 # Add test execution
