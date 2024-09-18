@@ -1,25 +1,36 @@
 #pragma once
 
 #include "Particle.h"
+#include "ParticleMath.h"
 #include "SDL_render.h"
 
 #include <stdlib.h>
-#include <vector>
 #include <time.h>
+#include <vector>
 
-class ParticleSystem
-{
+struct emitter {
+    int x;
+    int y;
+    int amount;
+    int lifeSpan;
+    int lifeSpanVar;
+    color startColor;
+    color endColor;
+};
+
+class ParticleSystem {
 public:
-	ParticleSystem(int amount, int velocity);
-	~ParticleSystem();
-	
-	void updateParticles();
-	std::vector<Particle> getParticles();
-	int getRandomNumber();
+    ParticleSystem(emitter);
+    ~ParticleSystem();
+
+    void updateParticles();
+    std::vector<Particle> getParticles();
 
 private:
-	int _amount;
-	int _velocity;
+    emitter particleEmitter;
+    ParticleMath particleMath;
+    std::vector<Particle> particleList;
 
-	std::vector<Particle> particleList;
+    color m_startColor;
+    color m_endColor;
 };
