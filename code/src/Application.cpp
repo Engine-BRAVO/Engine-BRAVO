@@ -20,10 +20,10 @@ Application::Application() {
     particleEmitter.x = 30;
     particleEmitter.y = 100;
     particleEmitter.amount = 500;
-    particleEmitter.lifeSpan = 50;
-    particleEmitter.lifeSpanVar = 10;
-    color startColor = {255, 255, 255};
-    color endColor = {255, 0, 0};
+    particleEmitter.lifeSpan = 70;
+    particleEmitter.lifeSpanVar = 20;
+    color startColor = {255, 50, 0};
+    color endColor = {255, 150, 0};
     particleEmitter.startColor = startColor;
     particleEmitter.endColor = endColor;
 
@@ -65,7 +65,7 @@ void Application::draw() {
         SDL_RenderPresent(renderer);
         SDL_UpdateWindowSurface(m_window);
     }
-    SDL_Delay(16);
+    SDL_Delay(0);
 }
 
 SDL_Surface* Application::load_surface(char const* path) {
