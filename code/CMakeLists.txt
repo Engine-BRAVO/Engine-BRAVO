@@ -19,17 +19,14 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_options(-g -O0)
 endif()
 
-set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}zstd/zstd-1.5.2/build/cmake" ${CMAKE_PREFIX_PATH})
-set(zstd_DIR "${PROJECT_SOURCE_DIR}/zstd/zstd-1.5.2/build/cmake")
-
-# Find the required packages
-#find_package(ZLIB REQUIRED)
-#find_package(tinyxml2 REQUIRED)
-#find_package(zstd REQUIRED)
-
-#set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-# Include the header files
+add_subdirectory(external/tmxlite-master/tmxlite)
 include_directories(${PROJECT_SOURCE_DIR}/inc)
+
+set(tmxlite_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/external/tmxlite-master/tmxlite/include)
+include_directories(${tmxlite_INCLUDE_DIRS})
+
+#set(tmxlite_LIBRARIES ${PROJECT_SOURCE_DIR}/external/tmxlite-master/tmxlite/build/libtmxlite.so)
+
 
 
 # Specify the source files
@@ -38,15 +35,11 @@ set(SOURCES
     # Add more source files here
 )
 
-link_directories(${PROJECT_SOURCE_DIR}/zstd/zstd-1.5.2/lib)
 # Add the executable target
 add_executable(engine_BRAVO ${SOURCES})
-#target_link_libraries(engine_BRAVO $(PROJECT_SOURCE_DIR)/zlib/zstd-1.5.2/lib/libzstd.so $(PROJECT_SOURCE_DIR)/tinyxml2/tinyxml2-9.0.0/build/libtinyxml2.a)
-target_link_libraries(engine_BRAVO 
-    ${PROJECT_SOURCE_DIR}/zstd/zstd-1.5.2/lib/libzstd.a 
-    ${PROJECT_SOURCE_DIR}/tinyxml2/tinyxml2-9.0.0/build/libtinyxml2.a 
-    ${PROJECT_SOURCE_DIR}/zlib/zlib-1.2.13/libz.so
-)
+
+
+target_link_libraries(engine_BRAVO tmxlite)
 
 
 # =====================
@@ -63,11 +56,6 @@ FetchContent_Declare(
 )
 # Make the content available
 FetchContent_MakeAvailable(googletest)
-
-# Set CMake flags for GTest
-set(GTEST_INCLUDE_DIR "${googletest_SOURCE_DIR}/googletest/include")
-set(GTEST_LIBRARY "${googletest_BINARY_DIR}/lib/libgtest.a")
-set(GTEST_MAIN_LIBRARY "${googletest_BINARY_DIR}/lib/libgtest_main.a")
 
 # Include the GTest directories
 include_directories(${GTEST_INCLUDE_DIR})
@@ -88,20 +76,7 @@ add_executable(tests ${TEST_SOURCES})
 # Link GTest and GTest Main to the test executable
 target_link_libraries(tests gtest gtest_main)
 
-# Fetch TinyTMX
-FetchContent_Declare(
-  tinytmx
-  URL https://github.com/KaseyJenkins/tinytmx/archive/refs/heads/master.zip
-)
-FetchContent_MakeAvailable(tinytmx)
 
-# Add extra compiler options for tinytmx to ensure <cstdint> is included
-target_compile_options(tinytmx PRIVATE -include cstdint)
-
-# Link libraries
-target_link_libraries(engine_BRAVO 
-    tinytmx    # Link TinyTMX
-)
 # Add test execution
 add_test(NAME engine_BRAVO_tests COMMAND tests)
 
