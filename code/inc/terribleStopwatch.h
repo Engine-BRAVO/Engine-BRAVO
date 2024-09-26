@@ -1,5 +1,5 @@
-#ifndef POC_STATE_HPP
-#define POC_STATE_HPP
+#ifndef TERRIBLESTOPWATCH_H
+#define TERRIBLESTOPWATCH_H
 
 #include <boost/statechart/event.hpp>
 #include <boost/statechart/state_machine.hpp>
@@ -97,10 +97,10 @@ struct Stopped : IElapsedTime, sc::simple_state<Stopped, Active>
 // breadth-first or depth-first way or employ a mixture of the
 // two.
 
-class PocState
+class terribleStopwatch
 {
 public:
     void run();
 };
 
-#endif // POC_STATE_HPP
+#endif // TERRIBLESTOPWATCH_H

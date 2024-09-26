@@ -1,12 +1,12 @@
 #include <iostream>
-#include "poc_state.hpp"
+#include "terribleStopwatch.h"
 
 int main()
 {
 
   std::cout << "Start program" << std::endl;
 
-  PocState pocState;
+  terribleStopwatch pocState;
   pocState.run();
 
   std::cout << "End program" << std::endl;

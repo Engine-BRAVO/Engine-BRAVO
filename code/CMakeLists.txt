@@ -128,6 +128,7 @@ set(BOX2D_PROFILE OFF CACHE BOOL "Enable profiling with Tracy" FORCE)
 set(BOX2D_VALIDATE OFF CACHE BOOL "Enable heavy validation" FORCE)
 set(BOX2D_UNIT_TESTS OFF CACHE BOOL "Build the Box2D unit tests" FORCE)
 
+
 # Add the external libraries
 add_subdirectory(external/SLikeNet)
 add_subdirectory(external/SDL)
@@ -135,7 +136,7 @@ add_subdirectory(external/SDL_mixer)
 add_subdirectory(external/SDL_image)
 add_subdirectory(external/tmxlite/tmxlite)
 add_subdirectory(external/box2d)
-add_subdirectory(external/boost)
+add_subdirectory(external/boost EXCLUDE_FROM_ALL)
 
 # Include the header files
 include_directories(${PROJECT_SOURCE_DIR}/inc)
