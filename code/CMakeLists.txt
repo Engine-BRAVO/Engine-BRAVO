@@ -159,13 +159,13 @@ add_executable(engine_BRAVO ${SOURCES} ${PROJECT_SOURCE_DIR}/src/main.cpp)
 # Link libraries
 target_link_libraries(engine_BRAVO PRIVATE ${LINK_LIBRARIES})
 
-# Add shared and static library targets
-add_library(engine_BRAVO_shared SHARED ${SOURCES})
-add_library(engine_BRAVO_static STATIC ${SOURCES})
+# # Add shared and static library targets
+# add_library(engine_BRAVO_shared SHARED ${SOURCES})
+# add_library(engine_BRAVO_static STATIC ${SOURCES})
 
-# Link libraries to the shared and static libraries
-target_link_libraries(engine_BRAVO_shared PRIVATE ${LINK_LIBRARIES})
-target_link_libraries(engine_BRAVO_static PRIVATE ${LINK_LIBRARIES})
+# # Link libraries to the shared and static libraries
+# target_link_libraries(engine_BRAVO_shared PRIVATE ${LINK_LIBRARIES})
+# target_link_libraries(engine_BRAVO_static PRIVATE ${LINK_LIBRARIES})
 
 # =====================
 # Google Test Integration

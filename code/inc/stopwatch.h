@@ -39,6 +39,7 @@
 #include <boost/statechart/event.hpp>
 #include <boost/statechart/state_machine.hpp>
 #include <boost/statechart/simple_state.hpp>
+#include <boost/statechart/state.hpp>
 #include <boost/statechart/transition.hpp>
 #include <boost/statechart/in_state_reaction.hpp>
 #include <boost/mpl/list.hpp>
@@ -78,6 +79,44 @@ struct Reset : sc::event<Reset>
  */
 struct Stopwatch : sc::state_machine<Stopwatch, NotActive>
 {
+    void printElapsedTime()
+    {
+        auto end = running ? std::chrono::steady_clock::now() : end_time;
+        auto elapsed = accumulated_time + std::chrono::duration_cast<std::chrono::seconds>(end - start_time);
+        std::cout << "Elapsed time: " << elapsed.count() << " seconds" << std::endl;
+    }
+
+private:
+    std::chrono::time_point<std::chrono::steady_clock> start_time;
+    std::chrono::time_point<std::chrono::steady_clock> end_time;
+    std::chrono::seconds accumulated_time{0};
+    bool running = false;
+
+    void start()
+    {
+        start_time = std::chrono::steady_clock::now();
+        running = true;
+    }
+
+    void stop()
+    {
+        end_time = std::chrono::steady_clock::now();
+        accumulated_time += std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time);
+        running = false;
+    }
+
+    void reset()
+    {
+        start_time = std::chrono::steady_clock::now();
+        end_time = start_time;
+        accumulated_time = std::chrono::seconds{0};
+    }
+
+    // Make state classes friends to allow them to call private methods
+    friend struct NotActive;
+    friend struct Active;
+    friend struct Stop;
+    friend struct Running;
 };
 
 // NotActive state definition
@@ -186,18 +225,20 @@ struct Stop : sc::simple_state<Stop, Active>
  * Reactions:
  * - sc::transition<StartStop, Stop>: Transition to Stop state on StartStop event.
  */
-struct Running : sc::simple_state<Running, Active>
+struct Running : sc::state<Running, Active>
 {
     typedef sc::transition<StartStop, Stop> reactions;
 
-    Running()
+    Running(my_context ctx) : my_base(ctx)
     {
         std::cout << "Entering Running state" << std::endl;
+        outermost_context().start();
     }
 
     ~Running()
     {
         std::cout << "Exiting Running state" << std::endl;
+        outermost_context().stop();
     }
 };
 
