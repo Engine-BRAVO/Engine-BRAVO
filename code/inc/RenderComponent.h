@@ -5,8 +5,6 @@
 class RenderComponent : public IComponent {
     public:
         RenderComponent();
-        void Update(double deltaTime);
-        void Render();
         const char* GetType() const;
 
         const std::string& getTexturePath() const;

@@ -29,6 +29,9 @@ set(SOURCES
     src/PhysicsComponent.cpp
     src/RenderComponent.cpp
     src/ComponentFactory.cpp
+    src/GameObjectSystem.cpp
+    src/PhysicsComponentSystem.cpp
+    src/RenderComponentSystem.cpp
     # Add more source files here
 )
 

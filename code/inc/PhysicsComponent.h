@@ -5,8 +5,6 @@
 class PhysicsComponent : public IComponent {
     public:
         PhysicsComponent();
-        void ApplyPhysics();
-        void Update(double deltaTime);
         const char* GetType() const;
 
         double getMass() const;

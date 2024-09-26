@@ -1,78 +1,41 @@
 #include <iostream>
+#include "GameObjectSystem.h"
 
-#include "test.h"
-#include "GameObject.h"
 
 int main() {
-  GameObject player;
-  GameObject enemy;
-  enemy.setName("enemyObject");
-  player.setName("playerObject");
+    GameObjectSystem ecs;
 
-  if (player.addComponent("RenderComponent"))
-  {
-    std::cout << "Component added successfully\n";
-  }
-  else 
-  {
-    std::cout << "Adding component failed\n";
-  }
+    int playerEntity = ecs.createEntity();
+    int enemyEntity = ecs.createEntity();
 
-  if (player.addComponent("PhysicsComponent"))
-  {
-    std::cout << "Component added successfully\n";
-  }
-  else 
-  {
-    std::cout << "Adding component failed\n";
-  }
+    // Add components
+    ecs.addComponent(playerEntity, "RenderComponent");
+    ecs.addComponent(playerEntity, "PhysicsComponent");
 
-  double deltaTime = 0.016;
-  player.Update(deltaTime);
+    double deltaTime = 0.016;
 
-  RenderComponent* renderComponent = player.getRenderComponent();
-  if(renderComponent)
-  {
-    renderComponent->setTexturePath("empty.png");
-    std::cout << "Render Texture Path: " << renderComponent->getTexturePath() << "\n";
-  
-    renderComponent->setOpacity(0.5);
-    std::cout << "Render opacity Texture Path: " << renderComponent->getOpacity() << "\n";
-  }
+    // Update systems in the ECS
+    ecs.update(deltaTime);
 
-  PhysicsComponent* physicsComponent = player.getPhysicsComponent();
-  if (physicsComponent)
-  {
-      physicsComponent->setMass(80.0);
-      std::cout << "Physics Mass: " << physicsComponent->getMass() << "\n";
+    // Access and manipulate components
+    auto* renderComponent = ecs.getComponent<RenderComponent>(playerEntity);
+    if (renderComponent) {
+        renderComponent->setTexturePath("empty.png");
+        std::cout << "Render Texture Path: " << renderComponent->getTexturePath() << "\n";
+    }
 
-      physicsComponent->setFriction(0.5);
-      std::cout << "Physics Friction: " << physicsComponent->getFriction() << "\n";
-  }
-  
+    auto* physicsComponent = ecs.getComponent<PhysicsComponent>(playerEntity);
+    if (physicsComponent) {
+        physicsComponent->setMass(80.0);
+        std::cout << "Physics Mass: " << physicsComponent->getMass() << "\n";
+    }
 
-  std::cout << "GameObject Name: " << player.getName() << "\n";
-  std::cout << "GameObject ID: " << player.getId() << "\n";
+    // Remove components
+    ecs.removeComponent(playerEntity, "RenderComponent");
+    std::cout << "RenderComponent removed from playerEntity.\n";
 
-  std::cout << "GameObject Name: " << enemy.getName() << "\n";
-  std::cout << "GameObject ID: " << enemy.getId() << "\n";  
-  if (player.removeComponent("RenderComponent"))
-  {
-    std::cout << "Component removed successfully\n";
-  }
-  else 
-  {
-    std::cout << "Removing component failed\n";
-  }
+    ecs.removeComponent(playerEntity, "PhysicsComponent");
+    std::cout << "PhysicsComponent removed from playerEntity.\n";
 
-  if (player.removeComponent("PhysicsComponent"))
-  {
-    std::cout << "Component removed successfully\n";
-  }
-  else 
-  {
-    std::cout << "Removing component failed\n";
-  }
-
-  return 0;
+    return 0;
 }

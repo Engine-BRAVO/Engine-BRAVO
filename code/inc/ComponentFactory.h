@@ -7,5 +7,5 @@
 
 class ComponentFactory {
 public:
-    std::unique_ptr<IComponent> createComponent(const std::string&);
+    static std::unique_ptr<IComponent> createComponent(const std::string&);
 };
