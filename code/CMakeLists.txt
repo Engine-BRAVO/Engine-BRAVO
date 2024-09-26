@@ -135,9 +135,11 @@ add_subdirectory(external/SDL_mixer)
 add_subdirectory(external/SDL_image)
 add_subdirectory(external/tmxlite/tmxlite)
 add_subdirectory(external/box2d)
+add_subdirectory(external/boost)
 
 # Include the header files
 include_directories(${PROJECT_SOURCE_DIR}/inc)
+include_directories(${CMAKE_SOURCE_DIR}/external/boost)
 
 # Automatically search for source files
 file(GLOB_RECURSE SOURCES
@@ -148,19 +150,19 @@ file(GLOB_RECURSE SOURCES
 # list(FILTER SOURCES EXCLUDE REGEX ".*main\\.cpp$") #TODO add this in later when there are more files than just main.cpp
 
 # Define the libraries to link against
-set(LINK_LIBRARIES RakNetLibStatic SDL2 SDL2_mixer SDL2_image tmxlite box2d)
+set(LINK_LIBRARIES RakNetLibStatic SDL2 SDL2_mixer SDL2_image tmxlite box2d Boost::statechart)
 
 # Add the executable target
 add_executable(engine_BRAVO ${SOURCES} ${PROJECT_SOURCE_DIR}/src/main.cpp)
 
-# Link SDL2 libraries
+# Link libraries
 target_link_libraries(engine_BRAVO PRIVATE ${LINK_LIBRARIES})
 
 # Add shared and static library targets
 add_library(engine_BRAVO_shared SHARED ${SOURCES})
 add_library(engine_BRAVO_static STATIC ${SOURCES})
 
-# Link SDL2 libraries to the shared and static libraries
+# Link libraries to the shared and static libraries
 target_link_libraries(engine_BRAVO_shared PRIVATE ${LINK_LIBRARIES})
 target_link_libraries(engine_BRAVO_static PRIVATE ${LINK_LIBRARIES})
 

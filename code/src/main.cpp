@@ -1,12 +1,15 @@
 #include <iostream>
+#include "poc_state.hpp"
 
-#include "test.h"
+int main()
+{
 
-int main() {
-  for (int i = 0; i < 10; i++) {
-    std::cout << "Hello, World!" << std::endl;
-  }
+  std::cout << "Start program" << std::endl;
 
-  test();
+  PocState pocState;
+  pocState.run();
+
+  std::cout << "End program" << std::endl;
+
   return 0;
 }
