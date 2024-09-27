@@ -6,38 +6,45 @@ World::World() {}
 
 World::~World() { b2DestroyWorld(worldId); }
 
-void World::createWorld()
+void World::createWorld(worldPara para)
 {
   worldDef = b2DefaultWorldDef();
-  worldDef.gravity = (b2Vec2){0.0f, 1000.0f};  // Configure gravity
+  worldDef.gravity =
+      (b2Vec2){para.gravity.x, para.gravity.y};  // Configure gravity
   worldId = b2CreateWorld(&worldDef);
 }
 
-void World::createGroundBody()
+void World::createGroundBody(rigidBody body)
 {
   groundBodyDef = b2DefaultBodyDef();
   groundBodyDef.position =
-      (b2Vec2){0.0f, 500.0f};  // Define a static ground body
+      (b2Vec2){body.bodyPos.x,
+               body.bodyPos.y + body.size.y};  // Define a static ground body
 
   groundId = b2CreateBody(worldId, &groundBodyDef);
-  groundBox = b2MakeBox(800.0f, 1.0f);
+  groundBox = b2MakeBox(body.size.x, body.size.y);
 
   groundShapeDef = b2DefaultShapeDef();
   b2CreatePolygonShape(groundId, &groundShapeDef, &groundBox);
 }
 
-void World::createDynamicBody()
+void World::createDynamicBody(dynamicBody body)
 {
   bodyDef = b2DefaultBodyDef();
   bodyDef.type = b2_dynamicBody;
-  bodyDef.position = (b2Vec2){800.0f / 2 - 25, 300.0f};
+  bodyDef.position = (b2Vec2){body.bodyPos.x,
+                              body.bodyPos.y};  // Initial position above ground
   bodyId = b2CreateBody(worldId, &bodyDef);
 
-  dynamicBox = b2MakeBox(50.0f, 50.0f);
+  // Create a dynamic box shape (1 unit x 1 unit)
+  dynamicBox = b2MakeBox(body.size.x, body.size.y);
 
   shapeDef = b2DefaultShapeDef();
-  shapeDef.density = 2.0f;
-  shapeDef.restitution = 0.8f;  // Bounciness (value between 0 and 1)
+  shapeDef.density = body.density;    // Density to affect the bounce
+  shapeDef.friction = body.friction;  // Low friction to allow sliding
+  shapeDef.restitution =
+      body.restitution;  // Bounciness (value between 0 and 1)
+
   b2CreatePolygonShape(bodyId, &shapeDef, &dynamicBox);
 }
 

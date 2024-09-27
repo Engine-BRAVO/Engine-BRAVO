@@ -11,8 +11,11 @@ const int WINDOW_HEIGHT = 600;
 class Floor
 {
  public:
-  Floor(float startX, float startY, float width, float height)
-      : posX(startX), posY(startY), width(width), height(height)
+  Floor(rigidBody body)
+      : posX(body.bodyPos.x),
+        posY(body.bodyPos.y),
+        width(body.size.x),
+        height(body.size.y)
   {
   }
 
@@ -32,7 +35,10 @@ class Floor
 class Square
 {
  public:
-  Square(float x, float y, float size) : posX(x), posY(y), size(size) {}
+  Square(dynamicBody body)
+      : posX(body.bodyPos.x), posY(body.bodyPos.y), size(body.size.x)
+  {
+  }
 
   void move(float deltaX, float deltaY)
   {
@@ -51,9 +57,6 @@ class Square
  private:
   float posX, posY;
   float size;
-
-  // Constant for floor position
-  static const int FLOOR_Y = 500;  // Y position of the floor
 };
 
 int main(int argc, char* argv[])
@@ -66,22 +69,42 @@ int main(int argc, char* argv[])
   SDL_Renderer* renderer =
       SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-  Square square(WINDOW_WIDTH / 2 - 25, WINDOW_HEIGHT / 2 - 25,
-                50.0f);                             // Center the square
-  Floor floor(0.0f, 500.0f, WINDOW_WIDTH, 200.0f);  // Create the floor
+  worldPara para;
+  para = {.gravity = {.x = 0.0f, .y = 1000.0f}};
+
+  dynamicBody squareShape;
+  squareShape = {.bodyPos = {.x = 400, .y = 300},
+                 .size = {.x = 50, .y = 50},
+                 .density = 0.1f,
+                 .friction = 0.5f,
+                 .restitution = 0.8f};
+
+  rigidBody staticBody;
+  staticBody = {.bodyPos = {.x = 0.0f, .y = 500.f},
+                .size = {.x = 800, .y = 200}};
+
+  Square square(squareShape);  // Center the square
+  Floor floor(staticBody);     // Create the floor
 
   bool running = true;
   SDL_Event event;
 
-  world->createWorld();
-  world->createGroundBody();
-  world->createDynamicBody();
+  world->createWorld(para);
+  world->createGroundBody(staticBody);
+  world->createDynamicBody(squareShape);
 
   float timeStep = 1.0f / 60.0f;
   int subStepCount = 4;
 
-  for (int i = 0; i < 500; ++i)
+  while (running)
   {
+    while (SDL_PollEvent(&event))
+    {
+      if (event.type == SDL_QUIT)
+      {
+        running = false;
+      }
+    }
     b2World_Step(world->getWorldId(), timeStep, subStepCount);
     b2Vec2 position = b2Body_GetPosition(world->getBodyId());
     b2Rot rotation = b2Body_GetRotation(world->getBodyId());
@@ -105,17 +128,6 @@ int main(int argc, char* argv[])
     // Present the renderer
     SDL_RenderPresent(renderer);
     SDL_Delay(16);  // ~60 FPS
-  }
-
-  while (running)
-  {
-    while (SDL_PollEvent(&event))
-    {
-      if (event.type == SDL_QUIT)
-      {
-        running = false;
-      }
-    }
   }
 
   SDL_DestroyRenderer(renderer);

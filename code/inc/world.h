@@ -1,15 +1,42 @@
 #include "box2d/box2d.h"
 #include "box2d/id.h"
 #include "box2d/types.h"
+
+struct xy
+{
+  float x;
+  float y;
+};
+
+struct dynamicBody
+{
+  xy bodyPos;
+  xy size;
+  float density;
+  float friction;
+  float restitution;
+};
+
+struct rigidBody
+{
+  xy bodyPos;
+  xy size;
+};
+
+struct worldPara
+{
+  xy gravity;
+};
+
 class World
 {
  public:
   World();
   ~World();
 
-  void createWorld();
-  void createGroundBody();
-  void createDynamicBody();
+  void createWorld(worldPara para);
+  void createGroundBody(rigidBody body);
+  void createDynamicBody(dynamicBody body);
 
   b2WorldId getWorldId();
   b2BodyId getBodyId();
