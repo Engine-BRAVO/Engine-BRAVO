@@ -1,12 +1,6 @@
+#include "test.h"
+#include <SDL2/SDL.h>
+#include <box2d/box2d.h>
 #include <iostream>
 
-#include "test.h"
-
-int main() {
-  for (int i = 0; i < 10; i++) {
-    std::cout << "Hello, World!" << std::endl;
-  }
-
-  test();
-  return 0;
-}
+int main() { return 0; }

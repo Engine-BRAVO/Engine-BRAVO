@@ -1,0 +1,3 @@
+/home/angel/ProjectMinor/Engine-BRAVO/code/lib/box2d-main/build/samples/imgui-subbuild/CMakeFiles/imgui-populate.dir
+/home/angel/ProjectMinor/Engine-BRAVO/code/lib/box2d-main/build/samples/imgui-subbuild/CMakeFiles/edit_cache.dir
+/home/angel/ProjectMinor/Engine-BRAVO/code/lib/box2d-main/build/samples/imgui-subbuild/CMakeFiles/rebuild_cache.dir
