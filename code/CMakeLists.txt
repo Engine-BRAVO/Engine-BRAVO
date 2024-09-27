@@ -63,7 +63,7 @@ set(RAKNET_GENERATE_INCLUDE_ONLY_DIR OFF CACHE BOOL "Setup a include/RakNet/ dir
 # set options for SDL_mixer
 set(SDL2MIXER_INSTALL OFF CACHE BOOL "Enable SDL2mixer install target" FORCE)
 set(SDL2MIXER_DEPS_SHARED OFF CACHE BOOL "Default value for loading dependencies dynamically" FORCE)
-set(SDL2MIXER_VENDORED ON CACHE BOOL "Use vendored third-party libraries" FORCE) # Set to ON if you enable almost any other option in this list
+set(SDL2MIXER_VENDORED OFF CACHE BOOL "Use vendored third-party libraries" FORCE) # Set to ON if you enable almost any other option in this list
 set(SDL2MIXER_SAMPLES OFF CACHE BOOL "Build the SDL2_mixer sample program(s)" FORCE) # Enable these if you need samples in poc for SDL_mixer
 set(SDL2MIXER_SAMPLES_INSTALL OFF CACHE BOOL "Install the SDL2_mixer sample program(s)" FORCE)
 set(SDL2MIXER_CMD OFF CACHE BOOL "Support an external music player" FORCE)
@@ -88,11 +88,11 @@ set(SDL2MIXER_MIDI_FLUIDSYNTH OFF CACHE BOOL "Support FluidSynth MIDI output" FO
 set(SDL2MIXER_MIDI_FLUIDSYNTH_SHARED OFF CACHE BOOL "Dynamically load libfluidsynth" FORCE)
 
 # Set options for SDL_image
-set(SDL2IMAGE_INSTALL OFF CACHE BOOL "Enable SDL2_image install target" FORCE)
+set(SDL2IMAGE_INSTALL ON CACHE BOOL "Enable SDL2_image install target" FORCE)
 set(SDL2IMAGE_DEPS_SHARED OFF CACHE BOOL "Load dependencies dynamically" FORCE)
 set(SDL2IMAGE_VENDORED ON CACHE BOOL "Use vendored third-party libraries" FORCE)
 set(SDL2IMAGE_SAMPLES OFF CACHE BOOL "Build the SDL2_image sample program(s)" FORCE) # Enable these if you need samples in poc for SDL_image
-set(SDL2IMAGE_SAMPLES_INSTALL OFF CACHE BOOL "Install the SDL2_image sample program(s)" FORCE)
+set(SDL2IMAGE_SAMPLES_INSTALL ON CACHE BOOL "Install the SDL2_image sample program(s)" FORCE)
 set(SDL2IMAGE_TESTS OFF CACHE BOOL "Build unit tests?" FORCE)
 set(SDL2IMAGE_TESTS_INSTALL OFF CACHE BOOL "Install unit tests?" FORCE)
 set(SDL2IMAGE_BACKEND_STB OFF CACHE BOOL "Use stb_image for loading JPEG and PNG files" FORCE)
@@ -119,14 +119,14 @@ set(SDL2IMAGE_JPG_SAVE OFF CACHE BOOL "Add JPEG save support" FORCE)
 set(SDL2IMAGE_PNG_SAVE OFF CACHE BOOL "Add PNG save support" FORCE)
 
 # Set options for Box2D
-set(BOX2D_SANITIZE OFF CACHE BOOL "Enable sanitizers for some builds" FORCE)
-set(BOX2D_AVX2 OFF CACHE BOOL "Enable AVX2 (faster)" FORCE)
-set(BOX2D_SAMPLES OFF CACHE BOOL "Build the Box2D samples" FORCE) # Enable these if you need samples in poc for Box2D
-set(BOX2D_BENCHMARKS OFF CACHE BOOL "Build the Box2D benchmarks" FORCE)
-set(BOX2D_DOCS OFF CACHE BOOL "Build the Box2D documentation" FORCE)
-set(BOX2D_PROFILE OFF CACHE BOOL "Enable profiling with Tracy" FORCE)
-set(BOX2D_VALIDATE OFF CACHE BOOL "Enable heavy validation" FORCE)
-set(BOX2D_UNIT_TESTS OFF CACHE BOOL "Build the Box2D unit tests" FORCE)
+set(BOX2D_SANITIZE ON CACHE BOOL "Enable sanitizers for some builds" FORCE)
+set(BOX2D_AVX2 ON CACHE BOOL "Enable AVX2 (faster)" FORCE)
+set(BOX2D_SAMPLES ON CACHE BOOL "Build the Box2D samples" FORCE) # Enable these if you need samples in poc for Box2D
+set(BOX2D_BENCHMARKS ON CACHE BOOL "Build the Box2D benchmarks" FORCE)
+set(BOX2D_DOCS ON CACHE BOOL "Build the Box2D documentation" FORCE)
+set(BOX2D_PROFILE ON CACHE BOOL "Enable profiling with Tracy" FORCE)
+set(BOX2D_VALIDATE ON CACHE BOOL "Enable heavy validation" FORCE)
+set(BOX2D_UNIT_TESTS ON CACHE BOOL "Build the Box2D unit tests" FORCE)
 
 # Add the external libraries
 add_subdirectory(external/SLikeNet)

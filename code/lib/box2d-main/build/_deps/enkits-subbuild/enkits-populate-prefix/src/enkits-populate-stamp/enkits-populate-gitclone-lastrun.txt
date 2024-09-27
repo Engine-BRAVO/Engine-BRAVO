@@ -1,3 +1,0 @@
-repository='https://github.com/dougbinks/enkiTS.git'
-module=''
-tag='origin'

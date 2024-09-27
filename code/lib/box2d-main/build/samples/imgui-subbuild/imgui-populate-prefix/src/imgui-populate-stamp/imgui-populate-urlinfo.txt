@@ -1,3 +1,0 @@
-repository='external project URL'
-module='https://github.com/ocornut/imgui/archive/docking.zip'
-tag=''
