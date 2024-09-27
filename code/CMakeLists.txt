@@ -128,15 +128,25 @@ set(BOX2D_PROFILE OFF CACHE BOOL "Enable profiling with Tracy" FORCE)
 set(BOX2D_VALIDATE OFF CACHE BOOL "Enable heavy validation" FORCE)
 set(BOX2D_UNIT_TESTS OFF CACHE BOOL "Build the Box2D unit tests" FORCE)
 
+# Set options for RecastNavigation
+set(RECASTNAVIGATION_DEMO OFF CACHE BOOL "Build RecastNavigation demo" FORCE)
+set(RECASTNAVIGATION_TESTS OFF CACHE BOOL "Build RecastNavigation tests" FORCE)
+set(RECASTNAVIGATION_EXAMPLES OFF CACHE BOOL "Build RecastNavigation tools" FORCE)
+set(RECASTNAVIGATION_DT_POLYREF64 OFF CACHE BOOL "Use 64bit polyrefs instead of 32bit for Detour" FORCE)
+set(RECASTNAVIGATION_DT_VIRTUAL_QUERYFILTER OFF CACHE BOOL "Use dynamic dispatch for dtQueryFilter in Detour to allow for custom filters" FORCE)
+
+add_subdirectory(external/SDL)
+# set(SDL2_LIBRARY SDL2::SDL2)
+# set(SDL2_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/external/SDL/include)
 
 # Add the external libraries
 add_subdirectory(external/SLikeNet)
-add_subdirectory(external/SDL)
 add_subdirectory(external/SDL_mixer)
 add_subdirectory(external/SDL_image)
 add_subdirectory(external/tmxlite/tmxlite)
 add_subdirectory(external/box2d)
 add_subdirectory(external/boost EXCLUDE_FROM_ALL)
+add_subdirectory(external/recastnavigation)
 
 # Include the header files
 include_directories(${PROJECT_SOURCE_DIR}/inc)
@@ -151,7 +161,12 @@ file(GLOB_RECURSE SOURCES
 # list(FILTER SOURCES EXCLUDE REGEX ".*main\\.cpp$") #TODO add this in later when there are more files than just main.cpp
 
 # Define the libraries to link against
-set(LINK_LIBRARIES RakNetLibStatic SDL2 SDL2_mixer SDL2_image tmxlite box2d Boost::statechart Boost::mpl)
+set(LINK_LIBRARIES RakNetLibStatic) #SLikeNet
+set(LINK_LIBRARIES ${LINK_LIBRARIES}  SDL2 SDL2_mixer SDL2_image) #SDL
+set(LINK_LIBRARIES ${LINK_LIBRARIES}  tmxlite) #tmxlite
+set(LINK_LIBRARIES ${LINK_LIBRARIES}  box2d) #box2d
+set(LINK_LIBRARIES ${LINK_LIBRARIES}  Boost::statechart Boost::mpl) #boost
+set(LINK_LIBRARIES ${LINK_LIBRARIES} Detour DetourCrowd DetourTileCache Recast) #RecastNavigation
 
 # Add the executable target
 add_executable(engine_BRAVO ${SOURCES} ${PROJECT_SOURCE_DIR}/src/main.cpp)
@@ -175,8 +190,9 @@ target_link_libraries(engine_BRAVO PRIVATE ${LINK_LIBRARIES})
 option(ENABLE_GTEST "Enable Google Test" OFF)
 
 if(ENABLE_GTEST)
-    # FetchContent module to download GTest
-    include(FetchContent)
+
+# FetchContent module 
+include(FetchContent)
 
     # Download and configure GTest
     FetchContent_Declare(

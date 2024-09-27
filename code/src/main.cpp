@@ -1,10 +1,14 @@
 #include <iostream>
 #include "terribleStopwatch.h"
 #include "stopwatch.h"
+#include "game.h"
 
 int main()
 {
   std::cout << "Start program" << std::endl;
+
+  Game game;
+  game.run();
 
   stopwatch pocStopwatch;
   pocStopwatch.runStopwatch();
