@@ -11,15 +11,15 @@ AlignConsecutiveDeclarations: None
 AlignEscapedNewlines: Left
 AlignOperands:   Align
 AlignTrailingComments: true
-AllowAllArgumentsOnNextLine: false
-AllowAllParametersOfDeclarationOnNextLine: false
-AllowShortEnumsOnASingleLine: fakse
+AllowAllArgumentsOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowShortEnumsOnASingleLine: true
 AllowShortBlocksOnASingleLine: Never
 AllowShortCaseLabelsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: false
-AllowShortLambdasOnASingleLine: false
+AllowShortFunctionsOnASingleLine: All
+AllowShortLambdasOnASingleLine: All
 AllowShortIfStatementsOnASingleLine: WithoutElse
-AllowShortLoopsOnASingleLine: false
+AllowShortLoopsOnASingleLine: true
 AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: true
@@ -29,15 +29,20 @@ AttributeMacros:
 BinPackArguments: true
 BinPackParameters: true
 BraceWrapping:
-  AfterClass:      true
-  AfterControlStatement: true
-  AfterEnum:       true
-  AfterFunction:   true
-  AfterNamespace:  true
-  AfterStruct:     true
-  AfterUnion:      true
-  BeforeCatch:     true
-  BeforeElse:      true
+  AfterCaseLabel:  false
+  AfterClass:      false
+  AfterControlStatement: Never
+  AfterEnum:       false
+  AfterFunction:   false
+  AfterNamespace:  false
+  AfterObjCDeclaration: false
+  AfterStruct:     false
+  AfterUnion:      false
+  AfterExternBlock: false
+  BeforeCatch:     false
+  BeforeElse:      false
+  BeforeLambdaBody: false
+  BeforeWhile:     false
   IndentBraces:    false
   SplitEmptyFunction: true
   SplitEmptyRecord: true

@@ -7,10 +7,9 @@ project(Engine-BRAVO VERSION 0.1)
 # Specify the C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Add a CMake option to enable or disable debug mode
 option(ENABLE_DEBUG "Enable debug mode" ON)
-
 # Set the build type based on the ENABLE_DEBUG option
 if(ENABLE_DEBUG)
     message("Debug mode enabled")
