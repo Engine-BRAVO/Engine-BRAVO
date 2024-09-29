@@ -9,8 +9,18 @@ int main() {
     int enemyEntity = ecs.createEntity();
 
     // Add components
-    ecs.addComponent(playerEntity, "RenderComponent");
-    ecs.addComponent(playerEntity, "PhysicsComponent");
+    if (ecs.addComponent(playerEntity, "RenderComponent")) {
+        std::cout << "RenderComponent added to playerEntity.\n";
+    } else {
+        std::cout << "Failed to add RenderComponent to playerEntity.\n";
+    }
+
+    if (ecs.addComponent(playerEntity, "PhysicsComponent")) {
+        std::cout << "PhysicsComponent added to playerEntity.\n";
+    } else {
+        std::cout << "Failed to add PhysicsComponent to playerEntity.\n";
+    }
+
 
     double deltaTime = 0.016;
 
@@ -18,24 +28,35 @@ int main() {
     ecs.update(deltaTime);
 
     // Access and manipulate components
-    auto* renderComponent = ecs.getComponent<RenderComponent>(playerEntity);
-    if (renderComponent) {
+    IComponent* renderComponentBase = ecs.getComponent(playerEntity, "RenderComponent");
+    if (renderComponentBase) {
+        RenderComponent* renderComponent = static_cast<RenderComponent*>(renderComponentBase);
         renderComponent->setTexturePath("empty.png");
         std::cout << "Render Texture Path: " << renderComponent->getTexturePath() << "\n";
     }
 
-    auto* physicsComponent = ecs.getComponent<PhysicsComponent>(playerEntity);
-    if (physicsComponent) {
+
+    IComponent* physicsComponentBase = ecs.getComponent(playerEntity, "PhysicsComponent");
+    if (physicsComponentBase) {
+        PhysicsComponent* physicsComponent = static_cast<PhysicsComponent*>(physicsComponentBase);
         physicsComponent->setMass(80.0);
         std::cout << "Physics Mass: " << physicsComponent->getMass() << "\n";
     }
 
-    // Remove components
-    ecs.removeComponent(playerEntity, "RenderComponent");
-    std::cout << "RenderComponent removed from playerEntity.\n";
 
-    ecs.removeComponent(playerEntity, "PhysicsComponent");
-    std::cout << "PhysicsComponent removed from playerEntity.\n";
+    // Remove components
+    if (ecs.removeComponent(playerEntity, "RenderComponent")) {
+        std::cout << "RenderComponent removed from playerEntity.\n";
+    } else {
+        std::cout << "Failed to remove RenderComponent from playerEntity.\n";
+    }
+
+    if (ecs.removeComponent(playerEntity, "PhysicsComponent")) {
+        std::cout << "PhysicsComponent removed from playerEntity.\n";
+    } else {
+        std::cout << "Failed to remove PhysicsComponent from playerEntity.\n";
+    }
+
 
     return 0;
 }

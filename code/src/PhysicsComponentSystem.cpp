@@ -1,11 +1,13 @@
 #include "PhysicsComponentSystem.h"
 
 void PhysicsComponentSystem::update(GameObjectSystem& gos, double deltaTime) {
-    // Iterate through all entities and render their components
+    // Iterate through all entities and update their physics components
     for (int entity : gos.getGameObjects()) {
-        auto* physicsComponent = gos.getComponent<PhysicsComponent>(entity);
-        if (physicsComponent) {
-            // Render logic here, e.g. rendering textures
+        IComponent* componentBase = gos.getComponent(entity, "PhysicsComponent");
+        if (componentBase) {
+            PhysicsComponent* physicsComponent = static_cast<PhysicsComponent*>(componentBase);
+            // Update physics logic here, e.g., applying forces, updating positions
+            // Example: physicsComponent->velocity += physicsComponent->acceleration * deltaTime;
         }
     }
 }

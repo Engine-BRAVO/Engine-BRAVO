@@ -8,19 +8,10 @@ class GameObjectSystem {
 public:
     int createEntity();
 
-    void addComponent(int, const std::string&);
-    void removeComponent(int, const std::string&);
+    bool addComponent(int, const std::string&);
+    bool removeComponent(int, const std::string&);
 
-    template<typename T>
-    T* getComponent(int entity) {
-        const char* typeName = T().GetType();
-        auto it = componentMap.find(typeName);
-        if (it != componentMap.end()) {
-            auto componentIt = it->second.find(entity);
-            return componentIt != it->second.end() ? static_cast<T*>(componentIt->second.get()) : nullptr;
-        }
-        return nullptr;
-    }
+    IComponent* getComponent(int, const std::string&);
 
     void update(double);
 
