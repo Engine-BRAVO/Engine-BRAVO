@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "SDL_keycode.h"
+#include "box2d/box2d.h"
 #include "world.h"
 
 const int WINDOW_WIDTH = 800;
@@ -95,16 +97,52 @@ int main(int argc, char* argv[])
 
   float timeStep = 1.0f / 60.0f;
   int subStepCount = 4;
-
+  b2Vec2 point;
+  b2Vec2 add = {300.0f, 300.0f};
   while (running)
   {
     while (SDL_PollEvent(&event))
     {
-      if (event.type == SDL_QUIT)
+      switch (event.type)
       {
-        running = false;
+        /* Look for a keypress */
+        case SDL_KEYDOWN:
+          /* Check the SDLKey values and move change the coords */
+          switch (event.key.keysym.sym)
+          {
+            case SDLK_LEFT:
+              b2Body_ApplyLinearImpulse(world->getBodyId(),
+                                        b2Body_GetPosition(world->getBodyId()),
+                                        {-5000.0f, 1000.0f}, true);
+              break;
+            case SDLK_RIGHT:
+              b2Body_ApplyLinearImpulse(world->getBodyId(),
+                                        b2Body_GetPosition(world->getBodyId()),
+                                        {5000.0f, 1000.0f}, true);
+              break;
+            case SDLK_UP:
+              point = b2Body_GetPosition(world->getBodyId());
+              point = point + add;
+
+              b2Body_ApplyForce(world->getBodyId(), {1000.0f, -100.0f}, point,
+                                true);
+              break;
+            case SDLK_DOWN:
+              break;
+            case SDLK_q:
+              running = false;
+              break;
+            default:
+              break;
+          }
       }
     }
+
+    if (event.type == SDL_QUIT)
+    {
+      running = false;
+    }
+
     b2World_Step(world->getWorldId(), timeStep, subStepCount);
     b2Vec2 position = b2Body_GetPosition(world->getBodyId());
     b2Rot rotation = b2Body_GetRotation(world->getBodyId());
