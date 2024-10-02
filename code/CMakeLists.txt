@@ -88,15 +88,15 @@ set(SDL2MIXER_MIDI_FLUIDSYNTH OFF CACHE BOOL "Support FluidSynth MIDI output" FO
 set(SDL2MIXER_MIDI_FLUIDSYNTH_SHARED OFF CACHE BOOL "Dynamically load libfluidsynth" FORCE)
 
 # Set options for SDL_image
-set(SDL2IMAGE_INSTALL OFF CACHE BOOL "Enable SDL2_image install target" FORCE)
-set(SDL2IMAGE_DEPS_SHARED OFF CACHE BOOL "Load dependencies dynamically" FORCE)
+set(SDL2IMAGE_INSTALL ON CACHE BOOL "Enable SDL2_image install target" FORCE)
+set(SDL2IMAGE_DEPS_SHARED ON CACHE BOOL "Load dependencies dynamically" FORCE)
 set(SDL2IMAGE_VENDORED ON CACHE BOOL "Use vendored third-party libraries" FORCE)
 set(SDL2IMAGE_SAMPLES OFF CACHE BOOL "Build the SDL2_image sample program(s)" FORCE) # Enable these if you need samples in poc for SDL_image
 set(SDL2IMAGE_SAMPLES_INSTALL OFF CACHE BOOL "Install the SDL2_image sample program(s)" FORCE)
 set(SDL2IMAGE_TESTS OFF CACHE BOOL "Build unit tests?" FORCE)
 set(SDL2IMAGE_TESTS_INSTALL OFF CACHE BOOL "Install unit tests?" FORCE)
-set(SDL2IMAGE_BACKEND_STB OFF CACHE BOOL "Use stb_image for loading JPEG and PNG files" FORCE)
-set(SDL2IMAGE_BACKEND_WIC OFF CACHE BOOL "Add WIC backend (Windows Imaging Component)" FORCE)
+set(SDL2IMAGE_BACKEND_STB ON CACHE BOOL "Use stb_image for loading JPEG and PNG files" FORCE)
+set(SDL2IMAGE_BACKEND_WIC ON CACHE BOOL "Add WIC backend (Windows Imaging Component)" FORCE)
 set(SDL2IMAGE_BACKEND_IMAGEIO OFF CACHE BOOL "Use native Mac OS X frameworks for loading images" FORCE)
 set(SDL2IMAGE_AVIF OFF CACHE BOOL "Support loading AVIF images" FORCE)
 set(SDL2IMAGE_BMP OFF CACHE BOOL "Support loading BMP images" FORCE)
@@ -105,7 +105,7 @@ set(SDL2IMAGE_JPG OFF CACHE BOOL "Support loading JPEG images" FORCE)
 set(SDL2IMAGE_JXL OFF CACHE BOOL "Support loading JXL images" FORCE)
 set(SDL2IMAGE_LBM OFF CACHE BOOL "Support loading LBM images" FORCE)
 set(SDL2IMAGE_PCX OFF CACHE BOOL "Support loading PCX images" FORCE)
-set(SDL2IMAGE_PNG OFF CACHE BOOL "Support loading PNG images" FORCE)
+set(SDL2IMAGE_PNG ON CACHE BOOL "Support loading PNG images" FORCE)
 set(SDL2IMAGE_PNM OFF CACHE BOOL "Support loading PNM images" FORCE)
 set(SDL2IMAGE_QOI OFF CACHE BOOL "Support loading QOI images" FORCE)
 set(SDL2IMAGE_SVG OFF CACHE BOOL "Support loading SVG images" FORCE)
@@ -116,7 +116,7 @@ set(SDL2IMAGE_XCF OFF CACHE BOOL "Support loading XCF images" FORCE)
 set(SDL2IMAGE_XPM OFF CACHE BOOL "Support loading XPM images" FORCE)
 set(SDL2IMAGE_XV OFF CACHE BOOL "Support loading XV images" FORCE)
 set(SDL2IMAGE_JPG_SAVE OFF CACHE BOOL "Add JPEG save support" FORCE)
-set(SDL2IMAGE_PNG_SAVE OFF CACHE BOOL "Add PNG save support" FORCE)
+set(SDL2IMAGE_PNG_SAVE ON CACHE BOOL "Add PNG save support" FORCE)
 
 # Set options for Box2D
 set(BOX2D_SANITIZE OFF CACHE BOOL "Enable sanitizers for some builds" FORCE)
@@ -165,7 +165,7 @@ target_link_libraries(engine_BRAVO_shared PRIVATE ${LINK_LIBRARIES})
 target_link_libraries(engine_BRAVO_static PRIVATE ${LINK_LIBRARIES})
 
 
-target_link_libraries(engine_BRAVO tmxlite)
+#target_link_libraries(engine_BRAVO tmxlite)
 
 
 # =====================
