@@ -7,14 +7,14 @@ int main()
 {
   std::cout << "Start program" << std::endl;
 
-  Game game;
+  game game;
   game.run();
 
-  stopwatch pocStopwatch;
-  pocStopwatch.runStopwatch();
+  // stopwatch pocStopwatch;
+  // pocStopwatch.runStopwatch();
 
-  terribleStopwatch tsStopwatch;
-  tsStopwatch.run();
+  // terribleStopwatch tsStopwatch;
+  // tsStopwatch.run();
 
   std::cout << "End program" << std::endl;
 

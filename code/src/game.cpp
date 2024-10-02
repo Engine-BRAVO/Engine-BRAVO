@@ -1,90 +1,188 @@
 #include "game.h"
-#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <stack>
+#include <vector>
 
-Game::Game() : maze(10, 10), ai(0, 0, 9, 9, maze)
+game::game()
 {
-    maze.setWall(1, 0);
-    maze.setWall(1, 1);
-    maze.setWall(1, 2);
-    maze.setWall(1, 3);
-    maze.setWall(1, 4);
+    mMaze = std::make_unique<maze>(MAZE_SIZE, MAZE_SIZE);
+}
 
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+void game::init()
+{
+    std::srand(std::time(nullptr));
+    generateMaze();
+}
+
+void game::generateMaze()
+{
+    // Initialize the maze with walls
+    for (int i = 0; i < MAZE_SIZE; ++i)
     {
-        std::cerr << "Failed to initialize SDL: " << SDL_GetError() << std::endl;
-        exit(1);
+        for (int j = 0; j < MAZE_SIZE; ++j)
+        {
+            mMaze->setWall(i, j, true);
+        }
     }
 
-    window = SDL_CreateWindow("Maze Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 800, SDL_WINDOW_SHOWN);
-    if (!window)
+    std::vector<std::vector<bool>> visited(MAZE_SIZE, std::vector<bool>(MAZE_SIZE, false));
+    std::stack<std::pair<int, int>> stack;
+
+    // Start from the top-left corner
+    int startX = 0;
+    int startY = 0;
+    stack.push({startX, startY});
+    visited[startX][startY] = true;
+    mMaze->setWall(startX, startY, false); // Set the starting cell as floor
+
+    std::vector<std::pair<int, int>> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+
+    while (!stack.empty())
     {
-        std::cerr << "Failed to create window: " << SDL_GetError() << std::endl;
-        SDL_Quit();
-        exit(1);
+        auto [x, y] = stack.top();
+        stack.pop();
+
+        std::vector<std::pair<int, int>> neighbors;
+        for (const auto &[dx, dy] : directions)
+        {
+            int nx = x + dx;
+            int ny = y + dy;
+            if (nx >= 0 && nx < MAZE_SIZE && ny >= 0 && ny < MAZE_SIZE && !visited[nx][ny])
+            {
+                neighbors.push_back({nx, ny});
+            }
+        }
+
+        if (!neighbors.empty())
+        {
+            stack.push({x, y});
+            auto [nx, ny] = neighbors[std::rand() % neighbors.size()];
+            visited[nx][ny] = true;
+            mMaze->setWall(nx, ny, false);                     // Set the cell as floor
+            mMaze->setWall((x + nx) / 2, (y + ny) / 2, false); // Remove wall between cells
+            stack.push({nx, ny});
+        }
     }
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (!renderer)
+    // Randomly place additional walls
+    int totalCells = MAZE_SIZE * MAZE_SIZE;
+    int wallCount = totalCells * 0.4;
+    int placedWalls = 0;
+    while (placedWalls < wallCount)
     {
-        std::cerr << "Failed to create renderer: " << SDL_GetError() << std::endl;
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        exit(1);
+        int row = std::rand() % MAZE_SIZE;
+        int col = std::rand() % MAZE_SIZE;
+        if (mMaze->getMaze()[row][col]->isFloor() && (row != 0 || col != 0))
+        {
+            mMaze->setWall(row, col, true);
+            placedWalls++;
+        }
     }
 }
 
-Game::~Game()
+void game::run()
 {
+    init();
+    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    {
+        return;
+    }
+
+    SDL_DisplayMode DM;
+    SDL_GetCurrentDisplayMode(0, &DM);
+    int screenWidth = DM.w * 0.8;
+    int screenHeight = DM.h * 0.8;
+
+    // Calculate the tile size based on the screen dimensions and maze dimensions
+    int tileSize = std::min(screenWidth / MAZE_SIZE, screenHeight / MAZE_SIZE);
+
+    // Adjust the window size to match the maze dimensions multiplied by the tile size
+    screenWidth = tileSize * MAZE_SIZE;
+    screenHeight = tileSize * MAZE_SIZE;
+
+    SDL_Window *window = SDL_CreateWindow("Maze Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
+    if (!window)
+    {
+        SDL_Quit();
+        return;
+    }
+
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (!renderer)
+    {
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return;
+    }
+
+    bool quit = false;
+    SDL_Event e;
+    Uint32 lastUpdate = SDL_GetTicks();
+    Uint32 lastRender = SDL_GetTicks();
+    const Uint32 updateInterval = 500;       // 2 ticks per second
+    const Uint32 renderInterval = 1000 / 60; // 60 FPS
+
+    while (!quit)
+    {
+        while (SDL_PollEvent(&e) != 0)
+        {
+            if (e.type == SDL_QUIT)
+            {
+                quit = true;
+            }
+        }
+
+        Uint32 current = SDL_GetTicks();
+        if (current - lastUpdate >= updateInterval)
+        {
+            // Update game logic here (e.g., AI movement)
+            lastUpdate = current;
+        }
+
+        if (current - lastRender >= renderInterval)
+        {
+            render(renderer, tileSize);
+            lastRender = current;
+        }
+    }
+
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
 
-void Game::run()
+void game::render(SDL_Renderer *renderer, int tileSize)
 {
-    bool running = true;
-    SDL_Event event;
-
-    while (running)
-    {
-        while (SDL_PollEvent(&event))
-        {
-            if (event.type == SDL_QUIT)
-            {
-                running = false;
-            }
-        }
-
-        ai.update();
-        render();
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-    }
-}
-
-void Game::render()
-{
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
-    // Render the maze
-    const int cellSize = 80;
-    for (int y = 0; y < maze.getHeight(); ++y)
+    for (int i = 0; i < MAZE_SIZE; ++i)
     {
-        for (int x = 0; x < maze.getWidth(); ++x)
+        for (int j = 0; j < MAZE_SIZE; ++j)
         {
-            if (!maze.isWalkable(x, y))
+            if (mMaze->getMaze()[i][j]->isFloor())
             {
-                SDL_Rect wallRect = {x * cellSize, y * cellSize, cellSize, cellSize};
-                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-                SDL_RenderFillRect(renderer, &wallRect);
+                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // White for floor
             }
+            else
+            {
+                SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255); // Gray for walls
+            }
+
+            SDL_Rect tileRect = {j * tileSize, i * tileSize, tileSize, tileSize};
+            SDL_RenderFillRect(renderer, &tileRect);
+
+            // Draw black border
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+            SDL_RenderDrawRect(renderer, &tileRect);
         }
     }
 
-    // Render the AI
-    SDL_Rect aiRect = {ai.getPosX() * cellSize, ai.getPosY() * cellSize, cellSize, cellSize};
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    SDL_RenderFillRect(renderer, &aiRect);
-
     SDL_RenderPresent(renderer);
+}
+
+const maze &game::getMaze() const
+{
+    return *mMaze;
 }

@@ -19,6 +19,3 @@
 [submodule "code/external/boost"]
 	path = code/external/boost
 	url = https://github.com/boostorg/boost.git
-[submodule "code/external/recastnavigation"]
-	path = code/external/recastnavigation
-	url = https://github.com/recastnavigation/recastnavigation.git

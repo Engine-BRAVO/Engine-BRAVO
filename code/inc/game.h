@@ -2,25 +2,29 @@
 #define GAME_H
 
 #include "maze.h"
-#include "ai.h"
-#include <thread>
-#include <chrono>
+
+#include <memory>
 #include <SDL2/SDL.h>
 
-class Game
+#define MAZE_SIZE 40
+
+class game
 {
 public:
-    Game();
-    ~Game();
+    game();
+    virtual ~game() = default;
+
     void run();
 
-private:
-    Maze maze;
-    AI ai;
-    SDL_Window *window;
-    SDL_Renderer *renderer;
+    const maze &getMaze() const;
 
-    void render();
+private:
+    std::unique_ptr<maze> mMaze;
+    void generateMaze();
+
+    void render(SDL_Renderer *renderer, int tileSize);
+
+    void init();
 };
 
 #endif // GAME_H

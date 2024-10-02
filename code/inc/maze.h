@@ -2,20 +2,24 @@
 #define MAZE_H
 
 #include <vector>
+#include <memory>
+#include "mazeNode.h"
 
-class Maze
+class maze
 {
 public:
-    Maze(int width, int height);
-    void setWall(int x, int y);
-    bool isWalkable(int x, int y) const;
-    int getWidth() const;
-    int getHeight() const;
-    const std::vector<std::vector<int>> &getGrid() const;
+    maze(int aRows, int aCols);
+    virtual ~maze() = default;
+
+    void setWall(int aRow, int aCol, bool aIsWall);
+    const std::vector<std::vector<std::unique_ptr<mazeNode>>> &getMaze() const;
 
 private:
-    int width, height;
-    std::vector<std::vector<int>> grid;
+    int mRows;
+    int mCols;
+    std::vector<std::vector<std::unique_ptr<mazeNode>>> mNodes;
+
+    void createEdges();
 };
 
 #endif // MAZE_H
