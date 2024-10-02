@@ -128,6 +128,15 @@ set(BOX2D_PROFILE OFF CACHE BOOL "Enable profiling with Tracy" FORCE)
 set(BOX2D_VALIDATE OFF CACHE BOOL "Enable heavy validation" FORCE)
 set(BOX2D_UNIT_TESTS OFF CACHE BOOL "Build the Box2D unit tests" FORCE)
 
+# Set options for BehaviorTree
+set(BTCPP_SHARED_LIBS ON CACHE BOOL "Build shared libraries" FORCE)
+set(BTCPP_BUILD_TOOLS OFF CACHE BOOL "Build commandline tools" FORCE)
+set(BTCPP_EXAMPLES OFF CACHE BOOL   "Build tutorials and examples" FORCE)
+set(BTCPP_UNIT_TESTS OFF CACHE BOOL "Build the unit tests" FORCE)
+set(BTCPP_GROOT_INTERFACE OFF CACHE BOOL "Add Groot2 connection. Requires ZeroMQ" FORCE)
+set(BTCPP_SQLITE_LOGGING OFF CACHE BOOL "Add SQLite logging." FORCE)
+set(LEXY_BUILD_TESTS OFF CACHE BOOL      "whether or not tests should be built" FORCE)
+
 # Add the external libraries
 add_subdirectory(external/SLikeNet)
 add_subdirectory(external/SDL)
@@ -135,6 +144,7 @@ add_subdirectory(external/SDL_mixer)
 add_subdirectory(external/SDL_image)
 add_subdirectory(external/tmxlite/tmxlite)
 add_subdirectory(external/box2d)
+add_subdirectory(external/BehaviorTree)
 
 # Include the header files
 include_directories(${PROJECT_SOURCE_DIR}/inc)
@@ -148,7 +158,7 @@ file(GLOB_RECURSE SOURCES
 # list(FILTER SOURCES EXCLUDE REGEX ".*main\\.cpp$") #TODO add this in later when there are more files than just main.cpp
 
 # Define the libraries to link against
-set(LINK_LIBRARIES RakNetLibStatic SDL2 SDL2_mixer SDL2_image tmxlite box2d)
+set(LINK_LIBRARIES RakNetLibStatic SDL2 SDL2_mixer SDL2_image tmxlite box2d behaviortree_cpp)
 
 # Add the executable target
 add_executable(engine_BRAVO ${SOURCES} ${PROJECT_SOURCE_DIR}/src/main.cpp)
