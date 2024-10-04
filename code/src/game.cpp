@@ -3,10 +3,15 @@
 #include <ctime>
 #include <stack>
 #include <vector>
+#include <algorithm>
+
+#include "ai.h"
 
 game::game()
 {
     mMaze = std::make_unique<maze>(MAZE_SIZE, MAZE_SIZE);
+    mAI = std::make_unique<ai>(*mMaze);
+    mStartSet = false;
 }
 
 void game::init()
@@ -120,7 +125,7 @@ void game::run()
     SDL_Event e;
     Uint32 lastUpdate = SDL_GetTicks();
     Uint32 lastRender = SDL_GetTicks();
-    const Uint32 updateInterval = 500;       // 2 ticks per second
+    const Uint32 updateInterval = 1000;      // 1 tick per second
     const Uint32 renderInterval = 1000 / 60; // 60 FPS
 
     while (!quit)
@@ -131,12 +136,31 @@ void game::run()
             {
                 quit = true;
             }
+            else if (e.type == SDL_MOUSEBUTTONDOWN)
+            {
+                int x, y;
+                SDL_GetMouseState(&x, &y);
+                int row = y / tileSize;
+                int col = x / tileSize;
+
+                if (!mStartSet)
+                {
+                    mAI->setLocation({col, row});
+                    mStartSet = true;
+                }
+                else
+                {
+                    mAI->setEndLocation({col, row});
+                    mAI->findPath();
+                }
+            }
         }
 
         Uint32 current = SDL_GetTicks();
         if (current - lastUpdate >= updateInterval)
         {
             // Update game logic here (e.g., AI movement)
+            mAI->updateLocation();
             lastUpdate = current;
         }
 
@@ -179,6 +203,23 @@ void game::render(SDL_Renderer *renderer, int tileSize)
         }
     }
 
+    // Render AI path
+    const std::vector<Node *> &path = mAI->getPath();
+    for (const auto &node : path)
+    {
+        SDL_SetRenderDrawColor(renderer, 255, 165, 0, 255); // Orange for path
+        SDL_Rect pathRect = {node->mLocation.x * tileSize, node->mLocation.y * tileSize, tileSize, tileSize};
+        SDL_RenderFillRect(renderer, &pathRect);
+    }
+
+    // Render AI
+    Location aiLocation = mAI->getLocation();
+    if (!(aiLocation.x == -1))
+    {
+        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // Red for AI
+        SDL_Rect aiRect = {aiLocation.x * tileSize, aiLocation.y * tileSize, tileSize, tileSize};
+        SDL_RenderFillRect(renderer, &aiRect);
+    }
     SDL_RenderPresent(renderer);
 }
 

@@ -3,6 +3,8 @@
 
 #include "maze.h"
 
+#include "ai.h"
+
 #include <memory>
 #include <SDL2/SDL.h>
 
@@ -20,6 +22,9 @@ public:
 
 private:
     std::unique_ptr<maze> mMaze;
+    std::unique_ptr<ai> mAI;
+    bool mStartSet;
+
     void generateMaze();
 
     void render(SDL_Renderer *renderer, int tileSize);

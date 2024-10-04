@@ -28,6 +28,15 @@ const std::vector<std::vector<std::unique_ptr<mazeNode>>> &maze::getMaze() const
     return mNodes;
 }
 
+bool maze::isWall(int aRow, int aCol) const
+{
+    if (aRow < 0 || aRow >= mRows || aCol < 0 || aCol >= mCols)
+    {
+        return true; // Out of bounds is considered a wall
+    }
+    return !mNodes[aRow][aCol]->isFloor();
+}
+
 void maze::createEdges()
 {
     for (int i = 0; i < mRows; ++i)

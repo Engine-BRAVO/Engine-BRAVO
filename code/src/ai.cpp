@@ -1,119 +1,250 @@
-// #include "ai.h"
-// #include <iostream>
-// #include <queue>
+#include "ai.h"
 
-// AI::AI(int startX, int startY, int endX, int endY, const Maze &maze)
-//     : startX(startX), startY(startY), endX(endX), endY(endY), maze(maze), navMesh(nullptr), navQuery(nullptr)
-// {
-//     posX = startX;
-//     posY = startY;
-//     buildNavMesh();
-//     findPath();
-// }
+#include <cmath>
+#include <algorithm>
+#include <iostream>
 
-// AI::~AI()
-// {
-//     if (navMesh)
-//     {
-//         dtFreeNavMesh(navMesh);
-//     }
-//     if (navQuery)
-//     {
-//         dtFreeNavMeshQuery(navQuery);
-//     }
-// }
+ai::ai(maze &aMaze) : mMaze(aMaze)
+{
+    mCurrentLocation = {-1, -1};
+    mNextLocation = mCurrentLocation;
+    mEndLocation = mCurrentLocation;
+}
 
-// void AI::buildNavMesh()
-// {
-//     // Build the navigation mesh using Recast
+ai::~ai()
+{
+    while (!mOpenSet.empty())
+    {
+        delete mOpenSet.top();
+        mOpenSet.pop();
+    }
+    for (const auto &node : mClosedSet)
+    {
+        delete node.second;
+    }
+    for (const auto &node : mPath)
+    {
+        delete node;
+    }
+}
 
-//     // Initialize navMesh and navQuery
-//     navMesh = dtAllocNavMesh();
-//     navQuery = dtAllocNavMeshQuery();
+void ai::setLocation(Location aLocation)
+{
+    mCurrentLocation = aLocation;
+    mNextLocation = aLocation;
+    mEndLocation = aLocation;
+}
 
-//     if (!navMesh || !navQuery)
-//     {
-//         std::cerr << "Failed to allocate navMesh or navQuery\n";
-//         return;
-//     }
+void ai::setEndLocation(Location aLocation)
+{
+    mEndLocation = aLocation;
+}
 
-//     // Load or build your navmesh here
-//     // For simplicity, let's assume you have a function to build the navmesh
-//     if (!buildRecastNavMesh(navMesh, maze))
-//     {
-//         std::cerr << "Failed to build navMesh\n";
-//         return;
-//     }
+Location ai::getLocation() const
+{
+    return mCurrentLocation;
+}
 
-//     // Initialize the query filter
-//     filter.setIncludeFlags(0xFFFF);
-//     filter.setExcludeFlags(0);
+void ai::updateLocation()
+{
+    if (mCurrentLocation.x == mEndLocation.x && mCurrentLocation.y == mEndLocation.y) // if at end do nothing
+    {
+        return;
+    }
+    // Check if current location is already at the next location
+    if (mCurrentLocation.x == mNextLocation.x && mCurrentLocation.y == mNextLocation.y)
+    {
+        // If path is not empty, set the next location to the next node in the path
+        if (!mPath.empty())
+        {
+            mNextLocation = mPath.back()->mLocation;
+            mPath.pop_back();
+        }
+    }
 
-//     if (dtStatusFailed(navQuery->init(navMesh, 2048)))
-//     {
-//         std::cerr << "Failed to initialize navQuery\n";
-//         return;
-//     }
-// }
+    // Move towards the next location by one step
+    if (mCurrentLocation.x != mNextLocation.x && mCurrentLocation.y != mNextLocation.y)
+    {
+        // Move diagonally
+        if (mCurrentLocation.x < mNextLocation.x)
+        {
+            mCurrentLocation.x++;
+        }
+        else
+        {
+            mCurrentLocation.x--;
+        }
+        if (mCurrentLocation.y < mNextLocation.y)
+        {
+            mCurrentLocation.y++;
+        }
+        else
+        {
+            mCurrentLocation.y--;
+        }
+    }
+    else if (mCurrentLocation.x != mNextLocation.x)
+    {
+        // Move horizontally
+        if (mCurrentLocation.x < mNextLocation.x)
+        {
+            mCurrentLocation.x++;
+        }
+        else
+        {
+            mCurrentLocation.x--;
+        }
+    }
+    else if (mCurrentLocation.y != mNextLocation.y)
+    {
+        // Move vertically
+        if (mCurrentLocation.y < mNextLocation.y)
+        {
+            mCurrentLocation.y++;
+        }
+        else
+        {
+            mCurrentLocation.y--;
+        }
+    }
+}
 
-// void AI::findPath()
-// {
-//     // Use Detour to find a path on the navmesh
-//     float startPos[3] = {static_cast<float>(startX), 0, static_cast<float>(startY)};
-//     float endPos[3] = {static_cast<float>(endX), 0, static_cast<float>(endY)};
+void ai::findPath()
+{
+    // Cleanup before starting the pathfinding
+    cleanup();
 
-//     dtPolyRef startRef, endRef;
-//     float nearestStart[3], nearestEnd[3];
+    // Lambda function to calculate the heuristic (Manhattan distance)
+    auto heuristic = [](Location a, Location b)
+    {
+        return std::abs(a.x - b.x) * 10 + std::abs(a.y - b.y) * 10;
+    };
 
-//     if (dtStatusFailed(navQuery->findNearestPoly(startPos, &filter, &startRef, nearestStart)))
-//     {
-//         std::cerr << "Failed to find nearest poly for start position\n";
-//         return;
-//     }
+    // Initialize the start node
+    Node *startNode = new Node{mCurrentLocation, 0, heuristic(mCurrentLocation, mEndLocation), 0, nullptr};
+    startNode->fCost = startNode->gCost + startNode->hCost;
 
-//     if (dtStatusFailed(navQuery->findNearestPoly(endPos, &filter, &endRef, nearestEnd)))
-//     {
-//         std::cerr << "Failed to find nearest poly for end position\n";
-//         return;
-//     }
+    // Add the start node to the open set
+    mOpenSet.push(startNode);
 
-//     dtPolyRef pathPolys[256];
-//     int pathCount;
-//     if (dtStatusFailed(navQuery->findPath(startRef, endRef, nearestStart, nearestEnd, &filter, pathPolys, &pathCount, 256)))
-//     {
-//         std::cerr << "Failed to find path\n";
-//         return;
-//     }
+    while (!mOpenSet.empty())
+    {
+        // Get the node with the lowest fCost
+        Node *currentNode = mOpenSet.top();
+        mOpenSet.pop();
 
-//     // Simplify the path
-//     float straightPath[256 * 3];
-//     unsigned char straightPathFlags[256];
-//     dtPolyRef straightPathPolys[256];
-//     int straightPathCount;
-//     if (dtStatusFailed(navQuery->findStraightPath(nearestStart, nearestEnd, pathPolys, pathCount, straightPath, straightPathFlags, straightPathPolys, &straightPathCount, 256)))
-//     {
-//         std::cerr << "Failed to find straight path\n";
-//         return;
-//     }
+        // If we reached the end location, reconstruct the path
+        if (currentNode->mLocation.x == mEndLocation.x && currentNode->mLocation.y == mEndLocation.y)
+        {
+            while (currentNode != nullptr)
+            {
+                mPath.push_back(currentNode);
+                currentNode = currentNode->mParent;
+            }
+            mPath.pop_back(); // Remove the start node
 
-//     // Convert the path to a stack of coordinates
-//     for (int i = straightPathCount - 1; i >= 0; --i)
-//     {
-//         path.push({static_cast<int>(straightPath[i * 3]), static_cast<int>(straightPath[i * 3 + 2])});
-//     }
-// }
+            for (auto node : mPath)
+            {
+                std::cout << node->mLocation.x << " " << node->mLocation.y << std::endl;
+            }
 
-// void AI::update()
-// {
-//     if (!path.empty())
-//     {
-//         posX = path.top().first;
-//         posY = path.top().second;
-//         path.pop();
-//     }
-// }
+            return;
+        }
 
-// void AI::render() const
-// {
-//     std::cout << "AI Position: (" << posX << ", " << posY << ")\n";
-// }
+        // Add the current node to the closed set
+        mClosedSet[currentNode->mLocation.x * 1000 + currentNode->mLocation.y] = currentNode;
+
+        // Check each neighbor of the current node
+        std::array<Location, 8> neighbors = {
+            Location{currentNode->mLocation.x + 1, currentNode->mLocation.y},      // right
+            Location{currentNode->mLocation.x - 1, currentNode->mLocation.y},      // left
+            Location{currentNode->mLocation.x, currentNode->mLocation.y + 1},      // down
+            Location{currentNode->mLocation.x, currentNode->mLocation.y - 1},      // up
+            Location{currentNode->mLocation.x + 1, currentNode->mLocation.y + 1},  // down-right
+            Location{currentNode->mLocation.x - 1, currentNode->mLocation.y + 1},  // down-left
+            Location{currentNode->mLocation.x + 1, currentNode->mLocation.y - 1},  // up-right
+            Location{currentNode->mLocation.x - 1, currentNode->mLocation.y - 1}}; // up-left
+
+        for (const auto &neighborLoc : neighbors)
+        {
+            // Skip if the neighbor is in the closed set
+            if (mClosedSet.find(neighborLoc.x * 1000 + neighborLoc.y) != mClosedSet.end())
+            {
+                continue;
+            }
+
+            // Skip if the neighbor is a wall
+            if (mMaze.isWall(neighborLoc.x, neighborLoc.y))
+            {
+                continue;
+            }
+
+            // Calculate the costs for the neighbor
+            int gCost = currentNode->gCost + ((neighborLoc.x != currentNode->mLocation.x && neighborLoc.y != currentNode->mLocation.y) ? 14 : 10);
+            int hCost = heuristic(neighborLoc, mEndLocation);
+            int fCost = gCost + hCost;
+
+            // Check if the neighbor is in the open set
+            bool inOpenSet = false;
+            Node *neighborNode = nullptr;
+            std::priority_queue<Node *, std::vector<Node *>, CompareNode> tempQueue = mOpenSet;
+            while (!tempQueue.empty())
+            {
+                Node *node = tempQueue.top();
+                tempQueue.pop();
+                if (node->mLocation.x == neighborLoc.x && node->mLocation.y == neighborLoc.y)
+                {
+                    inOpenSet = true;
+                    neighborNode = node;
+                    break;
+                }
+            }
+
+            // If the neighbor is not in the open set or the new path is shorter
+            if (!inOpenSet || gCost < neighborNode->gCost)
+            {
+                if (!inOpenSet)
+                {
+                    neighborNode = new Node{neighborLoc, gCost, hCost, fCost, currentNode};
+                    mOpenSet.push(neighborNode);
+                }
+                else
+                {
+                    neighborNode->gCost = gCost;
+                    neighborNode->hCost = hCost;
+                    neighborNode->fCost = fCost;
+                    neighborNode->mParent = currentNode;
+                }
+            }
+        }
+    }
+}
+
+const std::vector<Node *> &ai::getPath() const
+{
+    return mPath;
+}
+
+void ai::cleanup()
+{
+    // Clear the open set
+    while (!mOpenSet.empty())
+    {
+        delete mOpenSet.top();
+        mOpenSet.pop();
+    }
+
+    // Clear the closed set
+    for (const auto &node : mClosedSet)
+    {
+        delete node.second;
+    }
+    mClosedSet.clear();
+
+    // Clear the path
+    for (const auto &node : mPath)
+    {
+        delete node;
+    }
+    mPath.clear();
+}

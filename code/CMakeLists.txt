@@ -135,10 +135,9 @@ set(RECASTNAVIGATION_EXAMPLES OFF CACHE BOOL "Build RecastNavigation tools" FORC
 set(RECASTNAVIGATION_DT_POLYREF64 OFF CACHE BOOL "Use 64bit polyrefs instead of 32bit for Detour" FORCE)
 set(RECASTNAVIGATION_DT_VIRTUAL_QUERYFILTER OFF CACHE BOOL "Use dynamic dispatch for dtQueryFilter in Detour to allow for custom filters" FORCE)
 
-add_subdirectory(external/SDL)
-
 # Add the external libraries
 add_subdirectory(external/SLikeNet)
+add_subdirectory(external/SDL)
 add_subdirectory(external/SDL_mixer)
 add_subdirectory(external/SDL_image)
 add_subdirectory(external/tmxlite/tmxlite)
