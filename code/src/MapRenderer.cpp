@@ -2,7 +2,7 @@
 #include <iostream>
 #include <unordered_map>
 
-MapRenderer::MapRenderer() : window(nullptr), renderer(nullptr) {}
+MapRenderer::MapRenderer() : window(nullptr), renderer(nullptr), camera(800, 600) {}
 
 MapRenderer::~MapRenderer()
 {
@@ -119,10 +119,10 @@ void MapRenderer::renderMap(const tmx::Map& map)
                     srcRect.h = tileSize.y;
 
                     SDL_Rect dstRect;
-                    dstRect.x = static_cast<int>(x * tileSize.x * zoomFactor);
-                    dstRect.y = static_cast<int>(y * tileSize.y * zoomFactor);
-                    dstRect.w = static_cast<int>(tileSize.x * zoomFactor);
-                    dstRect.h = static_cast<int>(tileSize.y * zoomFactor);
+                    dstRect.x = static_cast<int>((x * tileSize.x - camera.getX()) * camera.getZoom());
+                    dstRect.y = static_cast<int>((y * tileSize.y - camera.getY()) * camera.getZoom());
+                    dstRect.w = static_cast<int>(tileSize.x * camera.getZoom());
+                    dstRect.h = static_cast<int>(tileSize.y * camera.getZoom());
 
                     std::cout << "Rendering tile at (" << x << ", " << y << ") with ID " << tile.ID << " on layer " << layer->getName() << std::endl;
                     SDL_RenderCopy(renderer, texture, &srcRect, &dstRect);
@@ -173,6 +173,31 @@ void MapRenderer::run(const tmx::Map& map)
             if (e.type == SDL_QUIT)
             {
                 quit = true;
+            }
+            else if (e.type == SDL_KEYDOWN)
+            {
+                switch (e.key.keysym.sym)
+                {
+                    case SDLK_UP:
+                        camera.move(0, -10);
+                        break;
+                    case SDLK_DOWN:
+                        camera.move(0, 10);
+                        break;
+                    case SDLK_LEFT:
+                        camera.move(-10, 0);
+                        break;
+                    case SDLK_RIGHT:
+                        camera.move(10, 0);
+                        break;
+                    case SDLK_PLUS:
+                    case SDLK_EQUALS:
+                        camera.setZoom(camera.getZoom() * 1.1f); // Zoom in
+                        break;
+                    case SDLK_MINUS:
+                        camera.setZoom(camera.getZoom() / 1.1f); // Zoom out
+                        break;
+                }
             }
         }
 

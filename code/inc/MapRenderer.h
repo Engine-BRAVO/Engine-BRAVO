@@ -6,6 +6,7 @@
 #include <tmxlite/TileLayer.hpp> 
 #include <vector>
 #include <string>
+#include "Camera.h"
 
 class MapRenderer
 {
@@ -22,4 +23,6 @@ private:
     std::vector<SDL_Texture*> tilesetTextures;
 
     SDL_Texture* loadTexture(const std::string& path);
+
+    Camera camera;
 };
