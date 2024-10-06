@@ -1,3 +1,4 @@
+#include "Enemy.h"
 #include "dummy_nodes.h"
 
 using namespace BT;
@@ -31,7 +32,14 @@ static const char* xml_text = R"(
 
 // clang-format on
 
-int main() {
+void example() {
+  /* Expected output:
+  *
+         [ Battery: OK ]
+         GripperInterface::open
+         ApproachObject: approach_object
+         GripperInterface::close
+  */
   // We use the BehaviorTreeFactory to register our custom nodes
   BehaviorTreeFactory factory;
 
@@ -68,14 +76,52 @@ int main() {
   // In this case, the entire sequence is executed, because all the children
   // of the Sequence return SUCCESS.
   tree.tickWhileRunning();
-
-  return 0;
 }
 
-/* Expected output:
-*
-       [ Battery: OK ]
-       GripperInterface::open
-       ApproachObject: approach_object
-       GripperInterface::close
-*/
+BT::NodeStatus MoveAction(Enemy &enemy) {
+  enemy.move();
+  return BT::NodeStatus::SUCCESS;
+}
+
+BT::NodeStatus AttackAction(Enemy &enemy) {
+  enemy.attack();
+  return BT::NodeStatus::SUCCESS;
+}
+
+BT::NodeStatus StealAction(Enemy &enemy) {
+  enemy.steal();
+  return BT::NodeStatus::SUCCESS;
+}
+
+void customTest() {
+  static const char *customXml = R"(
+
+ <root BTCPP_format="4" >
+
+     <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <Move   name="Move"/>
+            <Attack    name="Attack"/>
+            <Steal name="Steal"/>
+        </Sequence>
+     </BehaviorTree>
+
+ </root>
+ )";
+  Enemy enemy;
+  BehaviorTreeFactory factory;
+
+  // factory.registerSimpleAction("Move",
+  //                              [&enemy]() { return MoveAction(enemy); });
+  factory.registerSimpleAction("Move", std::bind(MoveAction, enemy));
+  factory.registerSimpleAction(
+      "Attack", [&enemy](TreeNode &) { return AttackAction(enemy); });
+  factory.registerSimpleAction(
+      "Steal", [&enemy](TreeNode &) { return StealAction(enemy); });
+
+  auto tree = factory.createTreeFromText(customXml);
+
+  tree.tickWhileRunning();
+}
+
+int main() { customTest(); }
