@@ -1,176 +1,37 @@
 #include <SDL2/SDL.h>
 
-#include <iostream>
-
-#include "SDL_keycode.h"
-#include "box2d/box2d.h"
 #include "world.h"
-
-const int WINDOW_WIDTH = 800;
-const int WINDOW_HEIGHT = 600;
-
-// Floor class definition
-class Floor
-{
- public:
-  Floor(rigidBody body)
-      : posX(body.bodyPos.x),
-        posY(body.bodyPos.y),
-        width(body.size.x),
-        height(body.size.y)
-  {
-  }
-
-  void render(SDL_Renderer* renderer)
-  {
-    SDL_Rect rect = {static_cast<int>(posX), static_cast<int>(posY),
-                     static_cast<int>(width), static_cast<int>(height)};
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);  // Green color
-    SDL_RenderFillRect(renderer, &rect);
-  }
-
- private:
-  float posX, posY;
-  float width, height;
-};
-
-class Square
-{
- public:
-  Square(dynamicBody body)
-      : posX(body.bodyPos.x), posY(body.bodyPos.y), size(body.size.x)
-  {
-  }
-
-  void move(float deltaX, float deltaY)
-  {
-    posX = deltaX;
-    posY = deltaY;
-  }
-
-  void render(SDL_Renderer* renderer)
-  {
-    SDL_Rect rect = {static_cast<int>(posX), static_cast<int>(posY),
-                     static_cast<int>(size), static_cast<int>(size)};
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);  // Red color
-    SDL_RenderFillRect(renderer, &rect);
-  }
-
- private:
-  float posX, posY;
-  float size;
-};
 
 int main(int argc, char* argv[])
 {
-  World* world = new World();
-  SDL_Init(SDL_INIT_VIDEO);
-  SDL_Window* window =
-      SDL_CreateWindow("SDL2 Square with Floor", SDL_WINDOWPOS_CENTERED,
-                       SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
-  SDL_Renderer* renderer =
-      SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+  worldStruct worldData = {0.0f, 1000.0f};
+  World* world = new World(worldData);
 
-  worldPara para;
-  para = {.gravity = {.x = 0.0f, .y = 1000.0f}};
+  dynamicStruct dynamicData{
+      .pos = {.x = 300.0f, .y = 300.0f},
+      .size = {.width = 50.0f, .height = 50.0f},
+      .properties = {.density = 0.1f, .friction = 0.1f, .restitution = 0.8f}};
 
-  dynamicBody squareShape;
-  squareShape = {.bodyPos = {.x = 400, .y = 300},
-                 .size = {.x = 50, .y = 50},
-                 .density = 0.1f,
-                 .friction = 0.5f,
-                 .restitution = 0.8f};
+  dynamicStruct dynamicData2{
+      .pos = {.x = 500.0f, .y = 300.0f},
+      .size = {.width = 50.0f, .height = 50.0f},
+      .properties = {.density = 0.1f, .friction = 0.5f, .restitution = 0.8f}};
 
-  rigidBody staticBody;
-  staticBody = {.bodyPos = {.x = 0.0f, .y = 500.f},
-                .size = {.x = 800, .y = 200}};
+  rigidStruct rigidData{.pos = {.x = 0.0f, .y = 500.0f},
+                        .size = {.width = 800.0f, .height = 100.0f}};
+  rigidStruct rigidData2{.pos = {.x = 300.0f, .y = 500.0f},
+                         .size = {.width = 100.0f, .height = 100.0f}};
 
-  Square square(squareShape);  // Center the square
-  Floor floor(staticBody);     // Create the floor
+  world->createDynamicBody(dynamicData);
+  world->createDynamicBody(dynamicData2);
+  world->createRigidBody(rigidData);
 
-  bool running = true;
-  SDL_Event event;
+  world->createRigidBody(rigidData2);
 
-  world->createWorld(para);
-  world->createGroundBody(staticBody);
-  world->createDynamicBody(squareShape);
-
-  float timeStep = 1.0f / 60.0f;
-  int subStepCount = 4;
-  b2Vec2 point;
-  b2Vec2 add = {300.0f, 300.0f};
-  while (running)
+  world->sdlSetup();
+  while (true)
   {
-    while (SDL_PollEvent(&event))
-    {
-      switch (event.type)
-      {
-        /* Look for a keypress */
-        case SDL_KEYDOWN:
-          /* Check the SDLKey values and move change the coords */
-          switch (event.key.keysym.sym)
-          {
-            case SDLK_LEFT:
-              b2Body_ApplyLinearImpulse(world->getBodyId(),
-                                        b2Body_GetPosition(world->getBodyId()),
-                                        {-5000.0f, 1000.0f}, true);
-              break;
-            case SDLK_RIGHT:
-              b2Body_ApplyLinearImpulse(world->getBodyId(),
-                                        b2Body_GetPosition(world->getBodyId()),
-                                        {5000.0f, 1000.0f}, true);
-              break;
-            case SDLK_UP:
-              point = b2Body_GetPosition(world->getBodyId());
-              point = point + add;
-
-              b2Body_ApplyForce(world->getBodyId(), {1000.0f, -100.0f}, point,
-                                true);
-              break;
-            case SDLK_DOWN:
-              break;
-            case SDLK_q:
-              running = false;
-              break;
-            default:
-              break;
-          }
-      }
-    }
-
-    if (event.type == SDL_QUIT)
-    {
-      running = false;
-    }
-
-    b2World_Step(world->getWorldId(), timeStep, subStepCount);
-    b2Vec2 position = b2Body_GetPosition(world->getBodyId());
-    b2Rot rotation = b2Body_GetRotation(world->getBodyId());
-    printf("%4.2f %4.2f %4.2f\n", position.x, position.y,
-           b2Rot_GetAngle(rotation));
-
-    // Clear the renderer
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);  // Black background
-    SDL_RenderClear(renderer);
-
-    // Render the floor
-    floor.render(renderer);
-
-    // Render the square
-    square.render(renderer);
-
-    // Move the square based on physics calculations
-    square.move(position.x,
-                position.y);  // Adjust these values for different movement
-
-    // Present the renderer
-    SDL_RenderPresent(renderer);
-    SDL_Delay(16);  // ~60 FPS
+    world->gameLoop();
   }
-
-  SDL_DestroyRenderer(renderer);
-  SDL_DestroyWindow(window);
-  SDL_Quit();
-
   return 0;
 }

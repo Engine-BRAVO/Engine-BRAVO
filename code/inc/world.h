@@ -1,60 +1,55 @@
-#include "box2d/box2d.h"
+#include <SDL2/SDL.h>
+
+#include <vector>
+
+#include "SDL_video.h"
 #include "box2d/id.h"
 #include "box2d/types.h"
+#include "dynamicBody.h"
+#include "rigidBody.h"
 
-struct xy
+struct worldStruct
 {
-  float x;
-  float y;
-};
-
-struct dynamicBody
-{
-  xy bodyPos;
-  xy size;
-  float density;
-  float friction;
-  float restitution;
-};
-
-struct rigidBody
-{
-  xy bodyPos;
-  xy size;
-};
-
-struct worldPara
-{
-  xy gravity;
+  float gravityX;
+  float gravityY;
 };
 
 class World
 {
  public:
-  World();
+  World(worldStruct);
   ~World();
 
-  void createWorld(worldPara para);
-  void createGroundBody(rigidBody body);
-  void createDynamicBody(dynamicBody body);
+  void sdlSetup();
+  void sdlRender();
+
+  void gameLoop();
+
+  void createWorld(worldStruct world);
+  void createRigidBody(rigidStruct rigid);
+  void createDynamicBody(dynamicStruct dynamic);
 
   b2WorldId getWorldId();
-  b2BodyId getBodyId();
 
  private:
+  int currentCube = 0;
+  const int WINDOW_WIDTH = 800;
+  const int WINDOW_HEIGHT = 600;
+
+  SDL_Window* window;
+  SDL_Renderer* renderer;
+
   // WORLD DEFINITION
+  worldStruct worldData;
   b2WorldDef worldDef;
   b2WorldId worldId;
+
+  std::vector<RigidBody*> rigidBodies;
+  std::vector<DynamicBody*> dynamicBodies;
 
   // GROUND BODY
   b2BodyDef groundBodyDef;
   b2BodyId groundId;
   b2Polygon groundBox;
   b2ShapeDef groundShapeDef;
-
-  // DYNAMIC BODY
-  b2BodyDef bodyDef;
-  b2BodyId bodyId;
-  b2Polygon dynamicBox;
-  b2ShapeDef shapeDef;
 };
