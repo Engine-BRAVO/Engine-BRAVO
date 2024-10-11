@@ -82,23 +82,27 @@ void World::gameLoop()
           {
             case SDLK_LEFT:
               b2Body_ApplyLinearImpulseToCenter(
-                  dynamicBodies[currentCube]->getBodyId(), {-50000.0f, 0.0f},
+                  dynamicBodies[currentCube]->getBodyId(), {-5000.0f, 0.0f},
                   true);
 
               break;
             case SDLK_RIGHT:
               b2Body_ApplyLinearImpulseToCenter(
-                  dynamicBodies[currentCube]->getBodyId(), {50000.0f, 0.0f},
+                  dynamicBodies[currentCube]->getBodyId(), {5000.0f, 0.0f},
                   true);
 
               break;
             case SDLK_UP:
               b2Body_ApplyLinearImpulseToCenter(
-                  dynamicBodies[currentCube]->getBodyId(), {0.0, -500000.0f},
+                  dynamicBodies[currentCube]->getBodyId(), {0.0, -5000.0f},
                   true);
 
               break;
             case SDLK_DOWN:
+              b2Body_ApplyLinearImpulseToCenter(
+                  dynamicBodies[currentCube]->getBodyId(), {0.0, 5000.0f},
+                  true);
+
               break;
             case SDLK_q:
               running = false;

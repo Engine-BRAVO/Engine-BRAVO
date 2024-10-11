@@ -4,18 +4,18 @@
 
 int main(int argc, char* argv[])
 {
-  worldStruct worldData = {0.0f, 1000.0f};
+  worldStruct worldData = {0.0f, 0.0f};
   World* world = new World(worldData);
 
   dynamicStruct dynamicData{
       .pos = {.x = 300.0f, .y = 300.0f},
       .size = {.width = 50.0f, .height = 50.0f},
-      .properties = {.density = 0.1f, .friction = 0.1f, .restitution = 0.8f}};
+      .properties = {.density = 1.0f, .friction = 0.1f, .restitution = 1.0f}};
 
   dynamicStruct dynamicData2{
       .pos = {.x = 500.0f, .y = 300.0f},
       .size = {.width = 50.0f, .height = 50.0f},
-      .properties = {.density = 0.1f, .friction = 0.5f, .restitution = 0.8f}};
+      .properties = {.density = 1.0f, .friction = 0.5f, .restitution = 0.8f}};
 
   rigidStruct rigidData{.pos = {.x = 0.0f, .y = 500.0f},
                         .size = {.width = 800.0f, .height = 100.0f}};
