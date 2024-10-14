@@ -19,17 +19,14 @@ int main(int argc, char* argv[])
 
   rigidStruct rigidData{.pos = {.x = 0.0f, .y = 500.0f},
                         .size = {.width = 800.0f, .height = 100.0f}};
-  rigidStruct rigidData2{.pos = {.x = 300.0f, .y = 500.0f},
-                         .size = {.width = 100.0f, .height = 100.0f}};
-  // rigidStruct rigidData3{.pos = {.x = 0.0f, .y = 0.0f},
-  //                      .size = {.width = 800.0f, .height = 800.0f}};
+  // rigidStruct rigidData2{.pos = {.x = 300.0f, .y = 500.0f},
+  //                      .size = {.width = 100.0f, .height = 100.0f}};
 
   world->createDynamicBody(dynamicData);
   world->createDynamicBody(dynamicData2);
   world->createRigidBody(rigidData);
 
-  world->createRigidBody(rigidData2);
-  world->setFrictionJoins();
+  // world->createRigidBody(rigidData2);
 
   world->sdlSetup();
   while (true)

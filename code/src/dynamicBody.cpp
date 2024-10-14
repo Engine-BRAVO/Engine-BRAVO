@@ -17,8 +17,7 @@ DynamicBody::DynamicBody(dynamicStruct dynamic, b2WorldId worldId)
   bodyId = b2CreateBody(worldId, &bodyDef);
 
   // Create a dynamic box shape (1 unit x 1 unit)
-  dynamicBox =
-      b2MakeBox(dynamicData.size.width / 2, dynamicData.size.height / 2);
+  dynamicBox = b2MakeBox(dynamicData.size.width, dynamicData.size.height);
 
   shapeDef = b2DefaultShapeDef();
   shapeDef.density = dynamicData.properties.density;
