@@ -11,6 +11,9 @@ DynamicBody::DynamicBody(dynamicStruct dynamic, b2WorldId worldId)
   bodyDef.position = (b2Vec2){
       dynamicData.pos.x, dynamicData.pos.y};  // Initial position above ground
   bodyDef.fixedRotation = true;
+  bodyDef.linearDamping = 0.1f;
+  bodyDef.angularDamping = 0.1f;
+
   bodyId = b2CreateBody(worldId, &bodyDef);
 
   // Create a dynamic box shape (1 unit x 1 unit)
@@ -21,7 +24,6 @@ DynamicBody::DynamicBody(dynamicStruct dynamic, b2WorldId worldId)
   shapeDef.density = dynamicData.properties.density;
   shapeDef.friction = dynamicData.properties.friction;
   shapeDef.restitution = dynamicData.properties.restitution;
-
   b2CreatePolygonShape(bodyId, &shapeDef, &dynamicBox);
 }
 

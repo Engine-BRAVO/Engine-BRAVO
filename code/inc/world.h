@@ -29,6 +29,8 @@ class World
   void createRigidBody(rigidStruct rigid);
   void createDynamicBody(dynamicStruct dynamic);
 
+  void setFrictionJoins();
+
   b2WorldId getWorldId();
 
  private:

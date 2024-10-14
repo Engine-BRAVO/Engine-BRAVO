@@ -15,5 +15,7 @@ RigidBody::RigidBody(rigidStruct rigid, b2WorldId worldId) : rigidData(rigid)
   b2CreatePolygonShape(groundId, &groundShapeDef, &groundBox);
 }
 
+b2BodyId RigidBody::getGroundid() { return this->groundId; }
+
 rigidPos RigidBody::getRigidPos() { return rigidData.pos; }
 rigidSize RigidBody::getRigidSize() { return rigidData.size; }

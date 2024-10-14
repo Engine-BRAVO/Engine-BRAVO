@@ -1,6 +1,8 @@
 #include "world.h"
 
 #include "box2d/box2d.h"
+#include "box2d/id.h"
+#include "box2d/types.h"
 
 World::World(worldStruct world) : worldData(world)
 {
@@ -57,7 +59,7 @@ void World::sdlRender()
 
   // Present the renderer
   SDL_RenderPresent(renderer);
-  SDL_Delay(16);  // ~60 FPS
+  // SDL_Delay(16);  // ~60 FPS
 
   //     b2Rot_GetAngle(rotation));
 }
@@ -82,26 +84,25 @@ void World::gameLoop()
           {
             case SDLK_LEFT:
               b2Body_ApplyLinearImpulseToCenter(
-                  dynamicBodies[currentCube]->getBodyId(), {-5000.0f, 0.0f},
+                  dynamicBodies[currentCube]->getBodyId(), {-500.0f, 0.0f},
                   true);
 
               break;
             case SDLK_RIGHT:
               b2Body_ApplyLinearImpulseToCenter(
-                  dynamicBodies[currentCube]->getBodyId(), {5000.0f, 0.0f},
+                  dynamicBodies[currentCube]->getBodyId(), {500.0f, 0.0f},
                   true);
 
               break;
             case SDLK_UP:
               b2Body_ApplyLinearImpulseToCenter(
-                  dynamicBodies[currentCube]->getBodyId(), {0.0, -5000.0f},
+                  dynamicBodies[currentCube]->getBodyId(), {0.0, -500.0f},
                   true);
 
               break;
             case SDLK_DOWN:
               b2Body_ApplyLinearImpulseToCenter(
-                  dynamicBodies[currentCube]->getBodyId(), {0.0, 5000.0f},
-                  true);
+                  dynamicBodies[currentCube]->getBodyId(), {0.0, 500.0f}, true);
 
               break;
             case SDLK_q:
@@ -126,6 +127,8 @@ void World::gameLoop()
   SDL_DestroyWindow(window);
   SDL_Quit();
 }
+
+void World::setFrictionJoins() {}
 
 void World::createWorld(worldStruct world) {}
 
