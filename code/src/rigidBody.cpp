@@ -1,6 +1,8 @@
 #include "rigidBody.h"
 
+#include "box2d/box2d.h"
 #include "box2d/id.h"
+#include "box2d/math_functions.h"
 
 RigidBody::RigidBody(rigidStruct rigid, b2WorldId worldId) : rigidData(rigid)
 {
@@ -17,5 +19,5 @@ RigidBody::RigidBody(rigidStruct rigid, b2WorldId worldId) : rigidData(rigid)
 
 b2BodyId RigidBody::getGroundid() { return this->groundId; }
 
-rigidPos RigidBody::getRigidPos() { return rigidData.pos; }
+b2Vec2 RigidBody::getRigidPos() { return b2Body_GetPosition(groundId); }
 rigidSize RigidBody::getRigidSize() { return rigidData.size; }

@@ -2,6 +2,8 @@
 
 #include "box2d/box2d.h"
 #include "box2d/id.h"
+#include "box2d/math_functions.h"
+#include "box2d/types.h"
 
 DynamicBody::DynamicBody(dynamicStruct dynamic, b2WorldId worldId)
     : dynamicData(dynamic)
@@ -24,6 +26,7 @@ DynamicBody::DynamicBody(dynamicStruct dynamic, b2WorldId worldId)
   shapeDef.friction = dynamicData.properties.friction;
   shapeDef.restitution = dynamicData.properties.restitution;
   b2CreatePolygonShape(bodyId, &shapeDef, &dynamicBox);
+  b2Body_EnableSleep(bodyId, false);
 }
 
 void DynamicBody::setPosition()
@@ -32,6 +35,6 @@ void DynamicBody::setPosition()
   dynamicData.pos = {position.x, position.y};
 }
 
-dynamicPos DynamicBody::getPosition() { return dynamicData.pos; }
+b2Vec2 DynamicBody::getPosition() { return b2Body_GetPosition(bodyId); }
 dynamicSize DynamicBody::getSize() { return dynamicData.size; }
 b2BodyId DynamicBody::getBodyId() { return bodyId; }

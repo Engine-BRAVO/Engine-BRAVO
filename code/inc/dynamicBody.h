@@ -1,5 +1,6 @@
 #include "box2d/box2d.h"
 #include "box2d/id.h"
+#include "box2d/math_functions.h"
 
 struct dynamicPos
 {
@@ -34,7 +35,7 @@ class DynamicBody
 
   void createBody(b2WorldId worldId);
   void setPosition();
-  dynamicPos getPosition();
+  b2Vec2 getPosition();
   dynamicSize getSize();
   dynamicProperties getProperties();
 

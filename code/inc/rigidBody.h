@@ -1,5 +1,6 @@
 #include "box2d/box2d.h"
 #include "box2d/id.h"
+#include "box2d/math_functions.h"
 
 struct rigidPos
 {
@@ -24,7 +25,7 @@ class RigidBody
  public:
   RigidBody(rigidStruct rigid, b2WorldId worldId);
 
-  rigidPos getRigidPos();
+  b2Vec2 getRigidPos();
   rigidSize getRigidSize();
 
   b2BodyId getGroundid();

@@ -33,7 +33,14 @@ class World
 
   b2WorldId getWorldId();
 
+  float pixelToMeter(const float value);
+  b2Vec2 pixelToMeter(const b2Vec2& rVector);
+  float meterToPixel(const float value);
+  b2Vec2 meterToPixel(const b2Vec2& rVector);
+
  private:
+  float MetersPerPixelFactor = 32.0f;
+
   int currentCube = 0;
   const int WINDOW_WIDTH = 800;
   const int WINDOW_HEIGHT = 600;

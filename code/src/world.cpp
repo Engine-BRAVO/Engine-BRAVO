@@ -1,7 +1,10 @@
 #include "world.h"
 
+#include <iostream>
+
 #include "box2d/box2d.h"
 #include "box2d/id.h"
+#include "box2d/math_functions.h"
 #include "box2d/types.h"
 
 World::World(worldStruct world) : worldData(world)
@@ -23,10 +26,30 @@ void World::sdlSetup()
   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 }
 
+float World::pixelToMeter(const float Value)
+{
+  return (Value * (1.0f / MetersPerPixelFactor));
+}
+
+// b2Vec2 World::pixelToMeter(const b2Vec2& rVector)
+// {
+//   return b2Vec2(pixelToMeter(rVector.x), pixelToMeter(rVector.y));
+// }
+
+float World::meterToPixel(const float Value)
+{
+  return (Value * MetersPerPixelFactor);
+}
+
+// b2Vec2 World::meterToPixel(const b2Vec2& rVector)
+// {
+//   return b2Vec2(meterToPixel(rVector.x), meterToPixel(rVector.y));
+// }
+
 void World::sdlRender()
 {
   float timeStep = 1.0f / 60.0f;
-  int subStepCount = 4;
+  int subStepCount = 20;
   b2World_Step(worldId, timeStep, subStepCount);
   // Clear the renderer
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);  // Black background
@@ -35,26 +58,33 @@ void World::sdlRender()
   for (auto iterator : rigidBodies)
   {
     rigidSize tempSize = iterator->getRigidSize();
-    rigidPos tempPos = iterator->getRigidPos();
-    SDL_Rect rect = {static_cast<int>(tempPos.x), static_cast<int>(tempPos.y),
-                     static_cast<int>(tempSize.width),
-                     static_cast<int>(tempSize.height)};
+    b2Vec2 tempPos = iterator->getRigidPos();
+    SDL_Rect rect = {static_cast<int>(tempPos.x - tempSize.width),
+                     static_cast<int>(tempPos.y - tempSize.height),
+                     static_cast<int>(tempSize.width * 2),
+                     static_cast<int>(tempSize.height * 2)};
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);  // Green color
     SDL_RenderFillRect(renderer, &rect);
+
+    std::cout << "left side of green: " << tempPos.x << std::endl;
+    // printf("%4.2f %4.2f\n", tempPos.x, tempPos.y);
   }
 
   for (auto iterator : dynamicBodies)
   {
     iterator->setPosition();
     dynamicSize tempSize = iterator->getSize();
-    dynamicPos tempPos = iterator->getPosition();
+    b2Vec2 tempPos = iterator->getPosition();
 
-    SDL_Rect rect = {static_cast<int>(tempPos.x), static_cast<int>(tempPos.y),
-                     static_cast<int>(tempSize.width),
-                     static_cast<int>(tempSize.height)};
+    SDL_Rect rect = {static_cast<int>(tempPos.x - tempSize.width),
+                     static_cast<int>(tempPos.y - tempSize.height),
+                     static_cast<int>(tempSize.width * 2),
+                     static_cast<int>(tempSize.height * 2)};
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);  // Red color
     SDL_RenderFillRect(renderer, &rect);
-    printf("%4.2f %4.2f\n", tempPos.x, tempPos.y);
+    std::cout << "right side of red: " << tempPos.x + tempSize.width
+              << std::endl;
+    // printf("%4.2f %4.2f\n", tempPos.x, tempPos.y);
   }
 
   // Present the renderer
@@ -71,6 +101,8 @@ void World::gameLoop()
 
   float timeStep = 1.0f / 60.0f;
   int subStepCount = 4;
+  b2BodyId bodyid;
+  b2Vec2 groundpos;
   while (running)
   {
     while (SDL_PollEvent(&event))
@@ -84,25 +116,26 @@ void World::gameLoop()
           {
             case SDLK_LEFT:
               b2Body_ApplyLinearImpulseToCenter(
-                  dynamicBodies[currentCube]->getBodyId(), {-500.0f, 0.0f},
+                  dynamicBodies[currentCube]->getBodyId(), {-2000.0f, 0.0f},
                   true);
 
               break;
             case SDLK_RIGHT:
               b2Body_ApplyLinearImpulseToCenter(
-                  dynamicBodies[currentCube]->getBodyId(), {500.0f, 0.0f},
+                  dynamicBodies[currentCube]->getBodyId(), {2000.0f, 0.0f},
                   true);
 
               break;
             case SDLK_UP:
               b2Body_ApplyLinearImpulseToCenter(
-                  dynamicBodies[currentCube]->getBodyId(), {0.0, -500.0f},
+                  dynamicBodies[currentCube]->getBodyId(), {0.0, -2000.0f},
                   true);
 
               break;
             case SDLK_DOWN:
               b2Body_ApplyLinearImpulseToCenter(
-                  dynamicBodies[currentCube]->getBodyId(), {0.0, 500.0f}, true);
+                  dynamicBodies[currentCube]->getBodyId(), {0.0, 2000.0f},
+                  true);
 
               break;
             case SDLK_q:
@@ -113,6 +146,28 @@ void World::gameLoop()
               break;
             case SDLK_2:
               currentCube = 1;
+              break;
+            case SDLK_3:
+              // currentCube = 1;
+              bodyid = rigidBodies.at(0)->getGroundid();
+              groundpos = b2Body_GetPosition(bodyid);
+              b2Body_SetTransform(bodyid, {groundpos.x - 5, groundpos.y},
+                                  {cos(0.0f), 0.0f});
+
+              break;
+            case SDLK_4:
+              // currentCube = 1;
+              bodyid = rigidBodies.at(0)->getGroundid();
+              groundpos = b2Body_GetPosition(bodyid);
+              b2Body_SetTransform(bodyid, {groundpos.x + 5, groundpos.y},
+                                  {cos(0.0f), 0.0f});
+
+              // currentCube = 1;
+              break;
+            case SDLK_5:
+              bodyid = dynamicBodies.at(0)->getBodyId();
+              b2Body_SetLinearVelocity(bodyid, {50.0f, 0.0f});
+
               break;
             default:
               break;
