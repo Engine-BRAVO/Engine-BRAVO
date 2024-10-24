@@ -66,8 +66,8 @@ void World::sdlRender()
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);  // Green color
     SDL_RenderFillRect(renderer, &rect);
 
-    std::cout << "left side of green: " << tempPos.x << std::endl;
-    // printf("%4.2f %4.2f\n", tempPos.x, tempPos.y);
+    // std::cout << "left side of green: " << tempPos.x << std::endl;
+    //  printf("%4.2f %4.2f\n", tempPos.x, tempPos.y);
   }
 
   for (auto iterator : dynamicBodies)
@@ -82,8 +82,8 @@ void World::sdlRender()
                      static_cast<int>(tempSize.height * 2)};
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);  // Red color
     SDL_RenderFillRect(renderer, &rect);
-    std::cout << "right side of red: " << tempPos.x + tempSize.width
-              << std::endl;
+    //  std::cout << "right side of red: " << tempPos.x + tempSize.width
+    //          << std::endl;
     // printf("%4.2f %4.2f\n", tempPos.x, tempPos.y);
   }
 
@@ -176,6 +176,8 @@ void World::gameLoop()
     }
 
     this->sdlRender();
+    contactListener.setContactList(worldId);
+    contactListener.getContact();
   }
 
   SDL_DestroyRenderer(renderer);

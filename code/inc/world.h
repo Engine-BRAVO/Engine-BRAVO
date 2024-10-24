@@ -5,6 +5,7 @@
 #include "SDL_video.h"
 #include "box2d/id.h"
 #include "box2d/types.h"
+#include "contact.h"
 #include "dynamicBody.h"
 #include "rigidBody.h"
 
@@ -61,4 +62,5 @@ class World
   b2BodyId groundId;
   b2Polygon groundBox;
   b2ShapeDef groundShapeDef;
+  Contact contactListener;
 };

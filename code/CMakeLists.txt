@@ -60,9 +60,9 @@ set(RAKNET_ENABLE_STATIC ON CACHE BOOL "Generate the static library project if t
 set(RAKNET_GENERATE_INCLUDE_ONLY_DIR OFF CACHE BOOL "Setup a include/RakNet/ directory in which all the headers are copied." FORCE)
 
 # set options for SDL_mixer
-set(SDL2MIXER_INSTALL OFF CACHE BOOL "Enable SDL2mixer install target" FORCE)
+set(SDL2MIXER_INSTALL ON CACHE BOOL "Enable SDL2mixer install target" FORCE)
 set(SDL2MIXER_DEPS_SHARED OFF CACHE BOOL "Default value for loading dependencies dynamically" FORCE)
-set(SDL2MIXER_VENDORED OFF CACHE BOOL "Use vendored third-party libraries" FORCE) # Set to ON if you enable almost any other option in this list
+set(SDL2MIXER_VENDORED ON CACHE BOOL "Use vendored third-party libraries" FORCE) # Set to ON if you enable almost any other option in this list
 set(SDL2MIXER_SAMPLES OFF CACHE BOOL "Build the SDL2_mixer sample program(s)" FORCE) # Enable these if you need samples in poc for SDL_mixer
 set(SDL2MIXER_SAMPLES_INSTALL OFF CACHE BOOL "Install the SDL2_mixer sample program(s)" FORCE)
 set(SDL2MIXER_CMD OFF CACHE BOOL "Support an external music player" FORCE)
