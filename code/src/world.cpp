@@ -178,6 +178,7 @@ void World::gameLoop()
     this->sdlRender();
     contactListener.setContactList(worldId);
     contactListener.getContact();
+    contactListener.getBodyContact(dynamicBodies[0]->getBodyId());
   }
 
   SDL_DestroyRenderer(renderer);

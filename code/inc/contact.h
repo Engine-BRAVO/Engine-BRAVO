@@ -7,6 +7,7 @@ class Contact : public b2ContactEvents
  public:
   void getContact();
   void setContactList(b2WorldId worldID);
+  void getBodyContact(b2BodyId);
 
  private:
   b2ContactEvents contactlist;
