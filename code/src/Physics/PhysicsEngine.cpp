@@ -12,7 +12,7 @@ void PhysicsEngine::update()
 
 	createBodies();
 
-	updateFlags();
+	// updateFlags();
 	setPositions();
 	applyForces();
 
@@ -93,6 +93,8 @@ void PhysicsEngine::setPositions()
 			Transform transform = gameObject.getTransform();
 
 			Vector2 newPos = Vector2(transform.position.x, transform.position.y);
+			std::cout << "Rotation in game: " << transform.rotation << std::endl;
+			std::cout << "Rotation in world: " << mWorld.getRotation(rigidBody->getBodyId()) << std::endl;
 
 			// if (newPos != mWorld.getPosition(rigidBody->getBodyId()) ||
 			// 	transform.rotation != mWorld.getRotation(rigidBody->getBodyId()))
