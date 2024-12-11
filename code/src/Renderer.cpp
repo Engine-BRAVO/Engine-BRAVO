@@ -1,3 +1,8 @@
+/**
+ * @file Renderer.cpp
+ * @brief Implementation of the Renderer class, responsible for rendering textures, shapes, and text.
+ */
+
 #include <iostream>
 
 #include <SDL_render.h>
@@ -10,6 +15,10 @@
 #include "Renderer.h"
 #include "Window.h"
 
+/**
+ * @brief Constructor for the Renderer class. Initializes the renderer and font.
+ * @param window The window to render to.
+ */
 Renderer::Renderer(Window& window)
 {
 	// Create renderer
@@ -48,6 +57,9 @@ Renderer::Renderer(Window& window)
 	mFont = font;
 }
 
+/**
+ * @brief Destructor for the Renderer class. Frees the renderer and font.
+ */
 Renderer::~Renderer()
 {
 	SDL_DestroyRenderer(this->mRenderer);
@@ -224,29 +236,14 @@ void Renderer::renderSquare(Vector2 aLocation, int aWidth, int aHeight, float ro
 	}
 }
 
-// void Renderer::renderSquare(Vector2 aLocation, int aWidth, int aHeight, Color aColor, bool aFill)
-// {
-// 	SDL_Rect rect;
-// 	rect.x = aLocation.x;
-// 	rect.y = aLocation.y;
-// 	rect.w = aWidth;
-// 	rect.h = aHeight;
-//
-// 	if (aColor.a != 255)
-// 		SDL_SetRenderDrawBlendMode(mRenderer, SDL_BLENDMODE_BLEND);
-//
-// 	SDL_SetRenderDrawColor(mRenderer, aColor.r, aColor.g, aColor.b, aColor.a);
-// 	if (aFill)
-// 	{
-// 		SDL_RenderFillRect(mRenderer, &rect);
-// 	}
-// 	else
-// 	{
-// 		SDL_RenderDrawRect(mRenderer, &rect);
-// 	}
-// }
-
-void Renderer::drawCircle(Vector2 center, int radius, Color aColor, bool aFill)
+/**
+ * @brief Draws a circle to the screen.
+ * @param center The center of the circle.
+ * @param radius The radius of the circle.
+ * @param aColor The color of the circle.
+ * @param aFill Whether to fill the circle.
+ */
+void Renderer::drawCircle(const Vector2& center, const int radius, const Color& aColor, const bool aFill) const
 {
 	// Set the render color
 	SDL_SetRenderDrawColor(mRenderer, aColor.r, aColor.g, aColor.b, aColor.a);
@@ -300,7 +297,16 @@ void Renderer::drawCircle(Vector2 center, int radius, Color aColor, bool aFill)
 	}
 }
 
-void Renderer::renderText(const std::string& aText, Vector2 aLocation, Color aColor, float scaleX, float scaleY)
+/**
+ * @brief Renders text to the screen.
+ * @param aText The text to render.
+ * @param aLocation The location to render the text.
+ * @param aColor The color of the text.
+ * @param scaleX The horizontal scale of the text.
+ * @param scaleY The vertical scale of the text.
+ */
+void Renderer::renderText(const std::string& aText, const Vector2& aLocation, const Color& aColor, const float scaleX,
+						  const float scaleY) const
 {
 	// Determine if text is fully opaque
 	bool isOpaque = (aColor.a == 255);
@@ -361,7 +367,15 @@ void Renderer::renderText(const std::string& aText, Vector2 aLocation, Color aCo
 	SDL_FreeSurface(surface);
 }
 
-bool Renderer::calculateTextSize(const std::string& font, const std::string& text, int& width, int& height)
+/**
+ * @brief Calculates the size of a text string.
+ * @param font The font to use.
+ * @param text The text to measure.
+ * @param width The width of the text.
+ * @param height The height of the text.
+ * @return True if the text size was successfully calculated, false otherwise.
+ */
+bool Renderer::calculateTextSize(const std::string& font, const std::string& text, int& width, int& height) const
 {
 	if (TTF_SizeText(mFont, text.c_str(), &width, &height) == 0)
 	{
@@ -374,18 +388,33 @@ bool Renderer::calculateTextSize(const std::string& font, const std::string& tex
 	}
 }
 
-void Renderer::setViewport(Rect& viewport)
+/**
+ * @brief Sets the viewport of the renderer.
+ * @param viewport The viewport to set.
+ */
+void Renderer::setViewport(const Rect& viewport) const
 {
 	SDL_Rect rect = ((SDL_Rect)viewport);
 	SDL_RenderSetViewport(mRenderer, &rect);
 }
 
-void Renderer::clear(Color aColor)
+/**
+ * @brief Clears the renderer with a specified color.
+ * @param aColor The color to clear the renderer with.
+ */
+void Renderer::clear(const Color& aColor) const
 {
 	SDL_SetRenderDrawColor(mRenderer, aColor.r, aColor.g, aColor.b, aColor.a); // Red
 	SDL_RenderClear(mRenderer);
 }
 
-void Renderer::show() { SDL_RenderPresent(mRenderer); }
+/**
+ * @brief Presents the renderer to the screen.
+ */
+void Renderer::show() const { SDL_RenderPresent(mRenderer); }
 
+/**
+ * @brief Retrieves the SDL renderer.
+ * @return The SDL renderer.
+ */
 SDL_Renderer*& Renderer::getSDLRenderer() { return mRenderer; }
