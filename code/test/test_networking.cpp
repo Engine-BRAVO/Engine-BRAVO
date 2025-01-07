@@ -328,7 +328,18 @@ TEST_F(INetworkBehaviourTest, GetNetworkBehaviourID)
 	EXPECT_EQ(id, 1);
 }
 
-TEST_F(INetworkBehaviourTest, ServerRpc) { EXPECT_THROW(behaviour->serverRpc(), std::runtime_error); }
+TEST_F(INetworkBehaviourTest, ServerRpc)
+{
+	try
+	{
+		behaviour->serverRpc();
+		FAIL() << "Expected std::runtime_error";
+	}
+	catch (const std::runtime_error& e)
+	{
+		EXPECT_STREQ(e.what(), "INetworkBehaviour::serverRpc() not implemented");
+	}
+}
 
 TEST_F(INetworkBehaviourTest, ClientRpc) { EXPECT_THROW(behaviour->clientRpc(), std::runtime_error); }
 
@@ -348,4 +359,19 @@ TEST_F(INetworkBehaviourTest, IsOwner)
 
 	networkObject.setOwner(false);
 	EXPECT_FALSE(behaviour->isOwner());
+}
+
+TEST_F(INetworkBehaviourTest, CopyConstructor)
+{
+	INetworkBehaviour behaviourCopy(*behaviour);
+	EXPECT_EQ(behaviourCopy.getNetworkBehaviourID(), behaviour->getNetworkBehaviourID());
+	EXPECT_EQ(behaviourCopy.GetNetworkVariables().size(), 0);
+}
+
+TEST_F(INetworkBehaviourTest, IsServer) { EXPECT_FALSE(behaviour->isServer()); }
+
+TEST_F(INetworkBehaviourTest, SetNetworkBehaviourID)
+{
+	behaviour->setNetworkBehaviourID(2);
+	EXPECT_EQ(behaviour->getNetworkBehaviourID(), 2);
 }

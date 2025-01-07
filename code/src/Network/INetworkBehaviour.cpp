@@ -30,6 +30,8 @@ INetworkBehaviour::INetworkBehaviour(const std::string& aTag)
  * @brief Copy constructor.
  *
  * @param other The INetworkBehaviour to copy.
+ * @note This constructor resets the network variables and adds each NetworkVariable. This function does not copy the
+ * networkVariables.
  */
 INetworkBehaviour::INetworkBehaviour(const INetworkBehaviour& other)
 	: IBehaviourScript(other), mIsOwner(other.mIsOwner), mIsOwnerSet(other.mIsOwnerSet),
@@ -111,9 +113,9 @@ bool INetworkBehaviour::isOwner()
 }
 
 /**
- * @brief Checks if the current object is the server.
+ * @brief Checks if the current application is the server.
  *
- * @return true If the current object is the server.
+ * @return true If the current application is the server.
  * @return false Otherwise.
  */
 bool INetworkBehaviour::isServer() { return EngineBravo::getInstance().getNetworkManager().isServer(); }
