@@ -11,6 +11,7 @@
 #undef protected
 #undef private
 
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include "ConcreteNetworkBehaviour.h"
@@ -374,4 +375,69 @@ TEST_F(INetworkBehaviourTest, SetNetworkBehaviourID)
 {
 	behaviour->setNetworkBehaviourID(2);
 	EXPECT_EQ(behaviour->getNetworkBehaviourID(), 2);
+}
+
+class NetworkClientTest : public ::testing::Test
+{
+protected:
+	void SetUp() override { networkClient = new NetworkClient(gameObjects, tickRate); }
+
+	void TearDown() override { delete networkClient; }
+
+	NetworkClient* networkClient;
+	std::vector<std::reference_wrapper<GameObject>> gameObjects;
+	int tickRate = 30;
+};
+
+TEST_F(NetworkClientTest, SetServerAddress)
+{
+	EXPECT_NO_THROW(networkClient->setServerAddress("192.168.1.1"));
+	EXPECT_THROW(networkClient->setServerAddress("invalid_ip"), std::runtime_error);
+}
+
+TEST_F(NetworkClientTest, IsConnected) { EXPECT_FALSE(networkClient->isConnected()); }
+
+class MockNetworkClient : public NetworkClient
+{
+public:
+	using NetworkClient::NetworkClient;
+	MOCK_METHOD(void, sendToServer, (SLNet::BitStream&), (override));
+	MOCK_METHOD(void, handleIncomingPackets, (), (override));
+};
+
+class NetworkClientMockTest : public ::testing::Test
+{
+protected:
+	void SetUp() override
+	{
+		GameObject gameObject;
+		gameObject.addComponent<NetworkObject>();
+		gameObject.addComponent<NetworkTransform>();
+		gameObjects.push_back(gameObject);
+		networkClient = new MockNetworkClient(gameObjects, tickRate);
+	}
+
+	void TearDown() override { delete networkClient; }
+
+	MockNetworkClient* networkClient;
+	std::vector<std::reference_wrapper<GameObject>> gameObjects;
+	int tickRate = 30;
+};
+
+TEST_F(NetworkClientMockTest, ConnectToServer)
+{
+	EXPECT_THROW(networkClient->connectToServer(), std::runtime_error);
+	networkClient->setServerAddress("192.168.0.1");
+}
+
+TEST_F(NetworkClientMockTest, SendPackets)
+{
+	EXPECT_CALL(*networkClient, sendToServer(::testing::_)).Times(::testing::AtLeast(1));
+	networkClient->sendPackets();
+}
+
+TEST_F(NetworkClientMockTest, HandleIncomingPackets)
+{
+	EXPECT_CALL(*networkClient, handleIncomingPackets()).Times(1);
+	networkClient->update();
 }

@@ -33,12 +33,12 @@ public:
 
 private:
     void sendPackets();
-    void sendToServer(SLNet::BitStream& aBitStream);
+    virtual void sendToServer(SLNet::BitStream& aBitStream);
     void sendTransform();
     void sendPlayerInit();
     void sendCustomSerialize();
 
-    void handleIncomingPackets();
+    virtual void handleIncomingPackets();
     void handleTransform(SLNet::Packet* aPacket);
     void handlePlayerInstantiation(SLNet::Packet* aPacket);
     void handleCustomSerialize(SLNet::Packet* aPacket);

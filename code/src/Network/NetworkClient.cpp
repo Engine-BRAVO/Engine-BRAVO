@@ -21,7 +21,6 @@
 #include <slikenet/MessageIdentifiers.h>
 #include <slikenet/peerinterface.h>
 #include <stdexcept>
-
 /**
  * @brief Constructs a NetworkClient object.
  * @param aObjects Reference to a vector of GameObjects.
